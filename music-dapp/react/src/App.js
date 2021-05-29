@@ -12,13 +12,13 @@ function App() {
   console.log(uploads)
 
   const handleUploads = () => {
-    const obj = {
+    let obj = {
       name: songname,
       artist: songartist,
       data: songdata.selectedFile
     }
-    console.log(obj)
-    setUploads([...obj])
+
+    setUploads([...uploads, obj])
   }
 
   return (
@@ -57,9 +57,11 @@ function App() {
               <div className="info-box">
                 <span>Music File</span>
                 <form>
-                  <input type="file" id="audio" name="audio" accept="audio/*"
-                    onChange={(event) => {setSongData({selectedFile: event.target.value})}}/>
-                  <button onClick={() => {
+                  <input type="file" id="audio" name="audio" accept="audio/*" 
+                    onChange={(event) => {
+                      setSongData({selectedFile: event.target.files[0]})
+                    }}/>
+                  <button type="button" onClick={() => {
                     handleUploads()
                     setSongName("")
                     setSongArtist("")
