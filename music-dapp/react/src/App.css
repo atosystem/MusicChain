@@ -1,0 +1,147 @@
+.App {
+  background: White;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.App-header {
+  position: absolute;
+  background: #00151d;
+  width: 100%;
+  height: 80px;
+  opacity: 0.9;
+  box-shadow: 0px 10px 16px rgba(0, 0, 0, 0.24);
+}
+
+.App-main {
+  position: relative;
+  background: transparent;
+  display: flex;
+  flex-direction: row;
+  margin-top: 80px;
+  width: 100%;
+  height: 100%;
+}
+
+.App-main .App-sidebar {
+  position: relative;
+  background: #faf3f3;
+  width: 250px;
+  height: 100%;
+}
+
+.App-main .App-interface {
+  position: relative;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-box {
+  position: relative;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 800px;
+  height: 400px;
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.36);
+  border-radius: 15px;
+  font-family: 'PT Sans', sans-serif;
+}
+
+.upload-box > .title {
+  position: relative;
+  background: black;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 20%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px
+}
+
+.upload-box .title span {
+  position: relative;
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 25%;
+  border-top-left-radius: 15px;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+}
+
+.upload-box .content {
+  position: relative;
+  /* display: flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center; */
+  height: 100%;
+  width: 100%;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px
+}
+
+.upload-box .content .info-box {
+  position: relative;
+  height: 25%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: white;
+}
+
+.upload-box .content .info-box > span {
+  position: relative;
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+  width: 15%;
+  font-size: 20px;
+  color: black;
+  text-align: center;
+}
+
+.upload-box .content .info-box Input {
+  height: 25%;
+  width: 25%;
+} 
+
+.upload-box .content .info-box > form {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 60%;
+}
+
+.upload-box .content .info-box > form > input {
+  position: relative;
+  width: 60%;
+}
+
+.upload-box .content .info-box > form > button {
+  position: relative;
+  width: 15%;
+}
+
+.upload-box .content .info-box > form > button:hover {
+  cursor: pointer;
+}
