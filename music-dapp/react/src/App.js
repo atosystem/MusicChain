@@ -11,12 +11,12 @@ function App() {
   const [uploads, setUploads] = useState([]);
   const [songHash, setSongHash] = useState('');
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
-  const [matchresult,setMatchresult] = useState('no file yet');
+  const [matchresult, setMatchresult] = useState('no file yet');
 
   console.log(uploads);
 
 
-  
+
 
   const handleUploads = async () => {
     let obj = {
@@ -27,22 +27,22 @@ function App() {
 
     setUploads([...uploads, obj]);
 
-    uploadAudioIPFS(songdata.selectedFile, songname ,(retHash) =>{
+    uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
       setSongHash(retHash)
-      const source = new EventSource(`http://localhost:3001/processupload?h=${retHash}`,{withCredentials:true});
+      const source = new EventSource(`http://localhost:3001/processupload?h=${retHash}`, { withCredentials: true });
       source.addEventListener('message', message => {
         console.log('Got', message.data);
         let msg_obj = JSON.parse(message.data)
-        if (msg_obj.status === "done"){
+        if (msg_obj.status === "done") {
           source.close()
-        }else if(msg_obj.status === 'matching_results'){
+        } else if (msg_obj.status === 'matching_results') {
           setMatchresult(message.data)
-        }else{
+        } else {
           setFingerprstatus(message.data);
         }
       });
     });
-    
+
   };
 
   return (
@@ -102,9 +102,9 @@ function App() {
                     Upload
                   </button>
                 </form>
-                
+
               </div>
-              <div className='info-box'><span>FingerPrint processing status :</span>{fingerprstatus}<br/>{matchresult}</div>
+              <div className='info-box'><span>FingerPrint processing status :</span>{fingerprstatus}<br />{matchresult}</div>
               <div className='info-box'>
                 <span>Music Download</span>
                 <form>

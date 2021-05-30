@@ -1,6 +1,6 @@
 const { create, CID } = require('ipfs-http-client');
 
-export const uploadAudioIPFS = async (data,  path = 'night.mp3', cb) => {
+export const uploadAudioIPFS = async (data, path = 'night.mp3', cb) => {
   // connect to the default API address http://localhost:5001
   const node = create('http://127.0.0.1:5001');
 
