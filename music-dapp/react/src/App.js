@@ -96,7 +96,7 @@ function App() {
                       handleUploads();
                       setSongName('');
                       setSongArtist('');
-                      setSongData({ selectedFile: null });
+                      // setSongData({ selectedFile: null });
                     }}
                   >
                     Upload
@@ -109,8 +109,8 @@ function App() {
                 <span>Music Download</span>
                 <form>
                   <Input
-                    placeholder="type song's name..."
-                    value={songname}
+                    placeholder="type song's hash..."
+                    value={songHash}
                     onChange={(event) => {
                       setSongHash(event.target.value);
                     }}
