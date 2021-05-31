@@ -5,8 +5,8 @@ contract MusicDApp {
 
   // state variables 
   address[] uploaderIndexes;
-  mapping(string => mapping(string => Music)) public music; // (name, artist) as primary key
-  mapping(string => Music[]) public music_list; // name as primary key
+  mapping(string => mapping(string => Music)) internal music; // (name, artist) as primary key
+  mapping(string => Music[]) internal music_list; // name as primary key
 
   // events firing
     // event OnMusicUpload(...)
@@ -16,10 +16,10 @@ contract MusicDApp {
   struct Music {
     address   uploader;
     bytes     ipfsHash;
-    bytes     name;
-    bytes     artist;
-    bytes     coverFrom;
-    bytes     uploadTime;
+    string    name;
+    string    artist;
+    string    coverFrom;
+    uint      uploadTime;
     // uint      count;
   }
 
@@ -34,16 +34,16 @@ contract MusicDApp {
     music_list[_name].push(_music);
   }
 
-  function getMusic(string _name, string _artist) public view returns(Music memory) {
+  function getMusic(string memory _name, string memory _artist) public view returns(Music memory) {
     Music memory _music = music[_name][_artist];
 
-    return _music
+    return _music;
   }
 
-  function getMusicList(string _name) public view returns(Music[] memory) {
+  function getMusicList(string memory _name) public view returns(Music[] memory) {
     Music[] memory _music_list = music_list[_name];
 
-    return _music_list
+    return _music_list;
   }
 
   // Private methods
