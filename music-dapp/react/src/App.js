@@ -15,10 +15,20 @@ function App() {
 
   console.log(uploads);
 
-
-
-
   const handleUploads = async () => {
+    if (!songname) {
+      alert('You have to set the SONG name!');
+      return;
+    }
+    if (!songartist) {
+      alert('You have to set the ARTIST name!');
+      return;
+    }
+    if (!songdata.selectedFile) {
+      alert('You have to upload a AUDIO!');
+      return;
+    }
+
     let obj = {
       name: songname,
       artist: songartist,
@@ -28,21 +38,28 @@ function App() {
     setUploads([...uploads, obj]);
 
     uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
-      setSongHash(retHash)
-      const source = new EventSource(`http://localhost:3001/processupload?h=${retHash}`, { withCredentials: true });
-      source.addEventListener('message', message => {
+      setSongHash(retHash);
+      const source = new EventSource(
+        `http://localhost:3001/processupload?h=${retHash}`,
+        { withCredentials: true }
+      );
+      source.addEventListener('message', (message) => {
         console.log('Got', message.data);
-        let msg_obj = JSON.parse(message.data)
-        if (msg_obj.status === "done") {
-          source.close()
+        let msg_obj = JSON.parse(message.data);
+        if (msg_obj.status === 'done') {
+          source.close();
         } else if (msg_obj.status === 'matching_results') {
-          setMatchresult(message.data)
+          setMatchresult(message.data);
         } else {
           setFingerprstatus(message.data);
         }
       });
     });
 
+    // reset input data
+    setSongName('');
+    setSongArtist('');
+    // setSongData({ selectedFile: null });
   };
 
   return (
@@ -79,7 +96,7 @@ function App() {
               </div>
 
               <div className='info-box'>
-                <span>Music File</span>
+                <span>Music Upload</span>
                 <form>
                   <input
                     type='file'
@@ -94,17 +111,20 @@ function App() {
                     type='button'
                     onClick={() => {
                       handleUploads();
-                      setSongName('');
-                      setSongArtist('');
-                      // setSongData({ selectedFile: null });
                     }}
                   >
                     Upload
                   </button>
                 </form>
-
               </div>
-              <div className='info-box'><span>FingerPrint processing status :</span>{fingerprstatus}<br />{matchresult}</div>
+
+              <div className='info-box'>
+                <span>FingerPrint processing status :</span>
+                {fingerprstatus}
+                <br />
+                {matchresult}
+              </div>
+
               <div className='info-box'>
                 <span>Music Download</span>
                 <form>

@@ -18,6 +18,10 @@ parser.add_argument('-s', '--searchfiles', nargs='*',
                     'leave blank to search for all')
 args = parser.parse_args()
 
+# check if hpcp directory exists
+if not os.path.isdir('hpcp_data'):
+    os.mkdir('hpcp_data')
+
 
 def formatoutput(status, payload=[]):
     out_obj = {
@@ -67,7 +71,7 @@ results = []
 exact_match = False
 for i, hpcp_file in enumerate(all_hpcp_files):
     formatoutput("matcing", {"current_idx": i+1,
-                 "total_len": len(all_hpcp_files)})
+                             "total_len": len(all_hpcp_files)})
     # print("Calculating {}".format(os.path.basename(hpcp_file)),flush=True)
     with open(hpcp_file, "rb") as f:
         ref_cover_hpcp = pickle.load(f)
