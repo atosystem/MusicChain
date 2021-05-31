@@ -127,6 +127,7 @@
 .upload-box .content .info-box Input {
   /* height: 25%; */
   width: 25%;
+  font-size: 15px;
 } 
 
 .upload-box .content .info-box > form {
