@@ -1,0 +1,22 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./docker/backend
+    # networks:
+    #   - db_network
+    ports:
+        - "3001:3001"
+  # python:
+  #   build:
+  #     context: ./docker/python
+  #   volumes:
+  #     - .:/code
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - db_network
+    # ports:
+    #   - "3001:3001"
+# networks:
+#   db_network:

@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node event_server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "convert-string": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ipfs-http-client": "^50.1.0",
+    "it-all": "^1.0.5",
+    "socket.io": "^4.1.2",
+    "socket.io-client": "^4.1.2",
+    "uint8arrays": "^2.1.5"
+  }
+}
