@@ -16,6 +16,7 @@ contract MusicDApp {
   struct Music {
     address   uploader;
     bytes     ipfsHash;
+    /* or store name, artist, coverFrom in bytes for lower gas when accessing */
     string    name;
     string    artist;
     string    coverFrom;
