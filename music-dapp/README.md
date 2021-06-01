@@ -7,12 +7,20 @@ ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", 
 ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
 ```
 
-## Run backend
-Build docker image
+## Run backend & ipfs in docker
+Setup (automatically start docker container)
 ```
-docker-compose build
+./setup.sh
 ```
-Start our backend engine
+Start docker container
 ```
 docker-compose up -d
+```
+Stop docker container
+```
+docker-compose down
+```
+Clear all data
+```
+./reset-all.sh
 ```

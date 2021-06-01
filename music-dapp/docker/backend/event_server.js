@@ -31,7 +31,7 @@ async function run() {
   app.get('/processupload', async function (req, res) {
     console.log('Got /events');
     let filehash = req.query.h;
-    console.log(`Gor filehash:${req.query.h}`);
+    console.log(`Got filehash:${req.query.h}`);
     res.set({
       'Cache-Control': 'no-cache',
       'Content-Type': 'text/event-stream',
