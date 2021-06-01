@@ -8,7 +8,7 @@ function App() {
   const [songname, setSongName] = useState('');
   const [songartist, setSongArtist] = useState('');
   const [songdata, setSongData] = useState({ selectedFile: null });
-  const [uploads, setUploads] = useState([]);
+  const [uploads, setUploads] = useState({});
   const [songHash, setSongHash] = useState('');
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
   const [matchresult, setMatchresult] = useState('no file yet');
@@ -42,7 +42,7 @@ function App() {
       data: songdata.selectedFile,
     };
 
-    setUploads([...uploads, obj]);
+    setUploads(obj);
 
     uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
       setSongHash(retHash);
@@ -66,6 +66,7 @@ function App() {
     // reset input data
     setSongName('');
     setSongArtist('');
+    // setUploads([]);
     // setSongData({ selectedFile: null });
   };
 
