@@ -16,6 +16,7 @@ function App() {
   console.log(uploads);
 
   const handleUploads = async () => {
+    // Force user to fill these input field
     if (!songname) {
       alert('You have to set the SONG name!');
       return;
@@ -25,7 +26,13 @@ function App() {
       return;
     }
     if (!songdata.selectedFile) {
-      alert('You have to upload a AUDIO!');
+      alert('You have to upload a file!');
+      return;
+    }
+
+    if (songdata.selectedFile.size >= 100000000) {
+      alert('The file limit is 100 MB!');
+      setSongData({ selectedFile: null });
       return;
     }
 
