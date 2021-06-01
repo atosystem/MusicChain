@@ -25,3 +25,6 @@ yarn-error.log*
 # development
 audio
 package-lock.json
+/contracts/node_modules
+/react/build
+/react/node_modules

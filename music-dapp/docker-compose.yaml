@@ -7,6 +7,9 @@ services:
       - music_Dapp_network
     ports:
       - "3001:3001"
+    volumes:
+      - ./docker/backend/tmp_files:/backend/tmp_files
+      - ./docker/backend/hpcp_data:/backend/hpcp_data
   ipfs:
     build:
       context: ./docker/ipfs

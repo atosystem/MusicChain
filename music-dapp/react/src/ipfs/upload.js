@@ -11,6 +11,6 @@ export const uploadAudioIPFS = async (data, path = 'night.mp3', cb) => {
 
   console.log('Added file:', added.path, added.cid.toString());
 
-  cb(added.cid.toString())
+  cb(added.cid.toString());
   // setHash();
 };
