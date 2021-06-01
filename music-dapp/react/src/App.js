@@ -25,7 +25,7 @@ function App() {
       return;
     }
     if (!songdata.selectedFile) {
-      alert('You have to upload a AUDIO!');
+      alert('You have to upload an AUDIO!');
       return;
     }
 
