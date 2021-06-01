@@ -1,8 +1,10 @@
 import './App.css';
 import { Input } from 'antd';
+import getWeb3 from './utils/getWeb3';
 import React, { useState, useEffect } from 'react';
 import { uploadAudioIPFS } from './ipfs/upload';
 import { downloadAudioIPFS } from './ipfs/download';
+import MusicDAppContract from './build/contracts/MusicDApp.json';
 
 function App() {
   const [songname, setSongName] = useState('');
@@ -12,10 +14,76 @@ function App() {
   const [songHash, setSongHash] = useState('');
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
   const [matchresult, setMatchresult] = useState('no file yet');
+  const [web3, setWeb3] = useState({});
+  const [accounts, setAccounts] = useState([]);
+  const [contract, setContract] = useState({});
 
-  console.log(uploads);
+  // testing
+  const [searchMusic, setSearchMusic] = useState('');
+  const [searchArtist, setSearchArtist] = useState('');
+
+  useEffect(async () => {
+    try {
+      const web3Instance = await getWeb3();
+      const accountsInstance = await web3Instance.eth.getAccounts();
+      const networkId = await web3Instance.eth.net.getId();
+      const deployedNetwork = MusicDAppContract.networks[networkId];
+      const contractInstance = new web3Instance.eth.Contract(
+        MusicDAppContract.abi,
+        deployedNetwork && deployedNetwork.address
+      );
+      setWeb3(web3Instance);
+      setAccounts(accountsInstance);
+      setContract(contractInstance);
+    } catch (error) {
+      alert(
+        `Failed to load web3, accounts, or contract. Check console for details.`
+      );
+      console.error(error);
+    }
+  });
+
+  const uplaodMusicBlockchain = async (retHash) => {
+    try {
+      const music = await contract.methods
+        .uploadMusic(retHash, songname, songartist, 'None')
+        .send({ from: accounts[0] });
+
+      console.log(music);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const testGetMusic = async () => {
+    const result = await contract.methods
+      .getMusic(searchMusic, searchArtist)
+      .call();
+    console.log(result);
+    console.log(result.ipfsHash);
+    setSongHash(result.ipfsHash);
+  };
+
+  const testGetMusicArtistList = async () => {
+    const result = await contract.methods
+      .getMusicArtistList(searchMusic)
+      .call();
+    console.log(result);
+  };
+
+  const testGetArtistMusicList = async () => {
+    const result = await contract.methods
+      .getArtistMusicList(searchArtist)
+      .call();
+    console.log(result);
+  };
+
+  // console.log(uploads);
 
   const handleUploads = async () => {
+    // console.log(`web3: ${web3}`);
+    // console.log(`accounts: ${accounts}`);
+    // console.log(`contract: ${contract}`);
     // Force user to fill these input field
     if (!songname) {
       alert('You have to set the SONG name!');
@@ -61,6 +129,8 @@ function App() {
           setFingerprstatus(message.data);
         }
       });
+
+      uplaodMusicBlockchain(retHash);
     });
 
     // reset input data
@@ -84,6 +154,48 @@ function App() {
             </div>
 
             <div className='content'>
+              <div className='info-box'>
+                <span>Test Blockchain</span>
+                <Input
+                  placeholder='music name'
+                  value={searchMusic}
+                  onChange={(event) => {
+                    setSearchMusic(event.target.value);
+                  }}
+                ></Input>
+                <Input
+                  placeholder='artist name'
+                  value={searchArtist}
+                  onChange={(event) => {
+                    setSearchArtist(event.target.value);
+                  }}
+                ></Input>
+                <button
+                  type='button'
+                  onClick={() => {
+                    testGetMusic();
+                  }}
+                >
+                  Test Get Music
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    testGetMusicArtistList();
+                  }}
+                >
+                  Test Get Music List
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    testGetArtistMusicList();
+                  }}
+                >
+                  Test Get Artist List
+                </button>
+              </div>
+
               <div className='info-box'>
                 <span>Name</span>
                 <Input
