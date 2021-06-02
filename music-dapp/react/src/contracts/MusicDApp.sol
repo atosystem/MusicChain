@@ -2,7 +2,8 @@ pragma solidity >=0.4.0 <0.9.0;
 // support return struct in functions
 pragma experimental ABIEncoderV2;
 
-// import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import "../../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./MusicCoin.sol";
 
 contract MusicDApp {
     // Basic storage unit
