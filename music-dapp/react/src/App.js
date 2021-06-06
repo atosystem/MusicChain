@@ -78,6 +78,16 @@ function App() {
     console.log(result);
   };
 
+  const testGetUserInfo = async () => {
+    const result = await contract.methods.getUserInfo().call();
+    console.log(result);
+  };
+
+  const testUserLogin = async () => {
+    const result = await contract.methods.login().send({ from: accounts[0] });
+    console.log(result);
+  };
+
   // console.log(uploads);
 
   const handleUploads = async () => {
@@ -193,6 +203,22 @@ function App() {
                   }}
                 >
                   Test Get Artist List
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    testGetUserInfo();
+                  }}
+                >
+                  Test Get User Info
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    testUserLogin();
+                  }}
+                >
+                  Test User Login
                 </button>
               </div>
 
