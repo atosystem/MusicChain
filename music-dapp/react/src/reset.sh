@@ -1,5 +1,5 @@
 rm -rf build
 truffle compile
-truffle migrate
+truffle migrate --reset
 # rm -rf build
 # mv build react/src
