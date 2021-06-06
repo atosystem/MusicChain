@@ -6,11 +6,110 @@ import { uploadAudioIPFS } from './ipfs/upload';
 import { downloadAudioIPFS } from './ipfs/download';
 import MusicDAppContract from './build/contracts/MusicDApp.json';
 
+import clsx from 'clsx';
+import {
+  CssBaseline, makeStyles,
+  Container, Box, Grid, Paper, AppBar, Toolbar, Drawer,
+  List, Typography, Divider, Badge,
+  TextField, Link, Button, IconButton
+} from '@material-ui/core';
+
+import Upload from './components/Upload';
+import Dashboard from './components/Dashboard';
+import Account from './components/Account';
+import Testing from './components/Testing';
+import { mainListItems, secondaryListItems } from './components/DrawerListItems';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+
+// defines CSS style properties for App()
+const drawerWidth = 240;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+    backgroundColor: '#a3d2ca'
+  },
+  toolbarIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  chevronleftIcon: {
+    color: 'white'
+  },
+  listItems: {
+    color: 'white'
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: 'none',
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawerPaper: {
+    backgroundColor: '#808080',
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+    backgroundColor: '#202020',
+  },
+}));
+
 function App() {
+  const classes = useStyles();
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [page, setPage] = useState("Testing");
+
   const [songname, setSongName] = useState('');
   const [songartist, setSongArtist] = useState('');
   const [songdata, setSongData] = useState({ selectedFile: null });
-  const [uploads, setUploads] = useState({});
+  const [fileTextField, setFileTextField] = useState("you haven't select a file yet...");
   const [songHash, setSongHash] = useState('');
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
   const [matchresult, setMatchresult] = useState('no file yet');
@@ -43,6 +142,13 @@ function App() {
     }
   });
 
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
   const uplaodMusicBlockchain = async (retHash) => {
     try {
       const music = await contract.methods
@@ -54,41 +160,6 @@ function App() {
       console.log(error);
     }
   };
-
-  const testGetMusic = async () => {
-    const result = await contract.methods
-      .getMusic(searchMusic, searchArtist)
-      .call();
-    console.log(result);
-    console.log(result.ipfsHash);
-    setSongHash(result.ipfsHash);
-  };
-
-  const testGetMusicArtistList = async () => {
-    const result = await contract.methods
-      .getMusicArtistList(searchMusic)
-      .call();
-    console.log(result);
-  };
-
-  const testGetArtistMusicList = async () => {
-    const result = await contract.methods
-      .getArtistMusicList(searchArtist)
-      .call();
-    console.log(result);
-  };
-
-  const testGetUserInfo = async () => {
-    const result = await contract.methods.getUserInfo().call();
-    console.log(result);
-  };
-
-  const testUserLogin = async () => {
-    const result = await contract.methods.login().send({ from: accounts[0] });
-    console.log(result);
-  };
-
-  // console.log(uploads);
 
   const handleUploads = async () => {
     // console.log(`web3: ${web3}`);
@@ -114,14 +185,6 @@ function App() {
       return;
     }
 
-    let obj = {
-      name: songname,
-      artist: songartist,
-      data: songdata.selectedFile,
-    };
-
-    setUploads(obj);
-
     uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
       setSongHash(retHash);
       const source = new EventSource(
@@ -146,168 +209,122 @@ function App() {
     // reset input data
     setSongName('');
     setSongArtist('');
-    // setUploads([]);
-    // setSongData({ selectedFile: null });
+    setFileTextField("you haven't select a file yet...");
   };
 
+  // components props passed down
+  const uploadProps = {
+    songname: songname, setSongName: setSongName,
+    songartist: songartist, setSongArtist: setSongArtist,
+    songdata: songdata, setSongData: setSongData,
+    fileTextField: fileTextField, setFileTextField: setFileTextField,
+    handleUploads: handleUploads,
+  }
+
+  const testingProps = {
+    searchMusic: searchMusic, setSearchMusic: setSearchMusic,
+    searchArtist: searchArtist, setSearchArtist: setSearchArtist,
+    songHash: songHash, setSongHash: setSongHash,
+    accounts: accounts,
+    contract: contract,
+    downloadAudioIPFS: downloadAudioIPFS,
+  }
+
+  // define routes of content pages
+  let contentComponent = null;
+  switch (page) {
+    case "Dashboard":
+      contentComponent = Dashboard();
+      break;
+    case "Upload":
+      contentComponent = Upload(uploadProps);
+      break;
+    case "Account":
+      contentComponent = Account();
+      break;
+    case "Testing":
+      contentComponent = Testing(testingProps);
+      break;
+    default:
+      contentComponent = Upload(uploadProps);
+  }
+
+  // return (
+  //   <div className='App'>
+  //     <div className='App-main'>
+  //       <div className='App-interface'>
+  //         <div className='upload-box'>
+  //           <div className='content'>
+
+  //             <div className='info-box'>
+  //               <span>FingerPrint processing status :</span>
+  //               {fingerprstatus}
+  //               <br />
+  //               {matchresult}
+  //             </div>
+
+              
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
+
   return (
-    <div className='App'>
-      <div className='App-header'></div>
+    <div className={classes.root}>
+      <CssBaseline />
 
-      <div className='App-main'>
-        <div className='App-sidebar'></div>
+      <AppBar position="absolute" className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}>
+        <Toolbar className={classes.toolbar}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            className={clsx(classes.menuButton, drawerOpen && classes.menuButtonHidden)}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        <div className='App-interface'>
-          <div className='upload-box'>
-            <div className='title'>
-              <span>Upload Music</span>
-            </div>
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            {page}
+          </Typography>
 
-            <div className='content'>
-              <div className='info-box'>
-                <span>Test Blockchain</span>
-                <Input
-                  placeholder='music name'
-                  value={searchMusic}
-                  onChange={(event) => {
-                    setSearchMusic(event.target.value);
-                  }}
-                ></Input>
-                <Input
-                  placeholder='artist name'
-                  value={searchArtist}
-                  onChange={(event) => {
-                    setSearchArtist(event.target.value);
-                  }}
-                ></Input>
-                <button
-                  type='button'
-                  onClick={() => {
-                    testGetMusic();
-                  }}
-                >
-                  Test Get Music
-                </button>
-                <button
-                  type='button'
-                  onClick={() => {
-                    testGetMusicArtistList();
-                  }}
-                >
-                  Test Get Music List
-                </button>
-                <button
-                  type='button'
-                  onClick={() => {
-                    testGetArtistMusicList();
-                  }}
-                >
-                  Test Get Artist List
-                </button>
-                <button
-                  type='button'
-                  onClick={() => {
-                    testGetUserInfo();
-                  }}
-                >
-                  Test Get User Info
-                </button>
-                <button
-                  type='button'
-                  onClick={() => {
-                    testUserLogin();
-                  }}
-                >
-                  Test User Login
-                </button>
-              </div>
+          <IconButton color="inherit">
+            <Badge badgeContent={3} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
-              <div className='info-box'>
-                <span>Name</span>
-                <Input
-                  placeholder="type song's name..."
-                  value={songname}
-                  onChange={(event) => {
-                    setSongName(event.target.value);
-                  }}
-                ></Input>
-                <span>Artist</span>
-                <Input
-                  placeholder="type song's artist..."
-                  value={songartist}
-                  onChange={(event) => {
-                    setSongArtist(event.target.value);
-                  }}
-                ></Input>
-              </div>
-
-              <div className='info-box'>
-                <span>Music Upload</span>
-                <form>
-                  <input
-                    type='file'
-                    id='audio'
-                    name='audio'
-                    accept='audio/*'
-                    onChange={(event) => {
-                      setSongData({ selectedFile: event.target.files[0] });
-                    }}
-                  />
-                  <button
-                    type='button'
-                    onClick={() => {
-                      handleUploads();
-                    }}
-                  >
-                    Upload
-                  </button>
-                </form>
-              </div>
-
-              <div className='info-box'>
-                <span>FingerPrint processing status :</span>
-                {fingerprstatus}
-                <br />
-                {matchresult}
-              </div>
-
-              <div className='info-box'>
-                <span>Music Download</span>
-                <form>
-                  <Input
-                    placeholder="type song's hash..."
-                    value={songHash}
-                    onChange={(event) => {
-                      setSongHash(event.target.value);
-                    }}
-                  ></Input>
-                  <button
-                    type='button'
-                    onClick={() => {
-                      console.log(songHash);
-                      downloadAudioIPFS(songHash);
-                    }}
-                  >
-                    Download
-                  </button>
-                </form>
-              </div>
-
-              <div className='info-box'>
-                <span>Music Play</span>
-                <audio
-                  controls
-                  src='/media/cc0-audio/t-rex-roar.mp3'
-                  id='music-play'
-                >
-                  Your browser does not support the
-                  <code>audio</code> element.
-                </audio>
-              </div>
-            </div>
-          </div>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !drawerOpen && classes.drawerPaperClose),
+        }}
+        open={drawerOpen}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon className={classes.chevronleftIcon}/>
+          </IconButton>
         </div>
-      </div>
+
+        <Divider />
+        <List className={classes.listItems}>{mainListItems(setPage)}</List>
+        <Divider />
+        <List className={classes.listItems}>{secondaryListItems(setPage)}</List>
+      </Drawer>
+
+      {/* Main content of each page */}
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <div>{contentComponent}</div>
+      </main>
+
+      {/* Could design a music player in the footer */}
     </div>
   );
 }
