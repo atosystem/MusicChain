@@ -57,7 +57,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
     height: '5ch',
-  } 
+  },
+  audioplayer: {
+    margin: theme.spacing(2),
+  },
 }));
 
 const Testing = (props) => {
@@ -230,6 +233,7 @@ const Testing = (props) => {
 
               <div>
                 <audio
+                  className={classes.audioplayer}
                   controls
                   src='/media/cc0-audio/t-rex-roar.mp3'
                   id='music-play'

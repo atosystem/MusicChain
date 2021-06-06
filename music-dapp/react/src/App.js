@@ -1,4 +1,3 @@
-import './App.css';
 import { Input } from 'antd';
 import getWeb3 from './utils/getWeb3';
 import React, { useState, useEffect } from 'react';
@@ -104,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [page, setPage] = useState("Testing");
+  const [page, setPage] = useState("Upload");
 
   const [songname, setSongName] = useState('');
   const [songartist, setSongArtist] = useState('');
