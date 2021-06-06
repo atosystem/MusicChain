@@ -48,6 +48,9 @@ module.exports = {
       network_id: '*', // Any network (default: none)
     },
 
+    // advanced:{
+    //   gas:8500000
+    // },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -90,8 +93,9 @@ module.exports = {
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
-          enabled: false,
-          runs: 200,
+          // wihout optimizer, the contract cannot be deployed to the chain
+          enabled: true, 
+          runs: 100,
         },
         evmVersion: 'byzantium',
       },
