@@ -104,4 +104,4 @@ if not exact_match:
     formatoutput("saved_query_hpcp")
     formatoutput("done")
 else:
-    formatoutput("done")
+    formatoutput("music_exist")
