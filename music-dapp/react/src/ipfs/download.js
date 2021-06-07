@@ -13,7 +13,11 @@ export const downloadAudioIPFS = async (cid) => {
 
   const dataArr = uint8Array.concat(await all(node.cat(cid)));
 
-  document.getElementById('music-play').src = URL.createObjectURL(
+  return URL.createObjectURL(
     new Blob([dataArr], { type: 'audio/mpeg' } /* (1) */)
   );
+
+  // document.getElementById('music-play').src = URL.createObjectURL(
+  //   new Blob([dataArr], { type: 'audio/mpeg' } /* (1) */)
+  // );
 };

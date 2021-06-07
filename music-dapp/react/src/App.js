@@ -1,10 +1,13 @@
 import { Input } from 'antd';
 import getWeb3 from './utils/getWeb3';
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { downloadAudioIPFS } from './ipfs/download';
 import MusicDAppContract from './build/contracts/MusicDApp.json';
+
+
 
 import clsx from 'clsx';
 import {
@@ -31,6 +34,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    // flexWrap: 'wrap',
+    height: '90%'
+
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -112,6 +118,8 @@ function App() {
   const [web3, setWeb3] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState({});
+
+  const [playersrc,setPlayersrc] = useState('');
 
 
 
@@ -202,7 +210,7 @@ function App() {
               <DashboardPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
             </Route>
             <Route exact path="/test">
-              <TestingPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+              <TestingPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} setPlayersrc={setPlayersrc} />
             </Route>
             <Route exact path="/dashboard">
               <DashboardPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
@@ -217,9 +225,11 @@ function App() {
           {/* <div>{contentComponent}</div> */}
 
         </main>
-
+        
         {/* Could design a music player in the footer */}
+        {/* <footer >asd</footer> */}
       </div>
+      <footer style={{height : '10%',}} >Music Player</footer>
     </Router>
   );
 }

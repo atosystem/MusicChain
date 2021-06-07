@@ -72,6 +72,7 @@ const TestingPage = (props) => {
   const web3 = props.web3;
   const accounts = props.accounts;
   const contract = props.contract;
+  const setPlayersrc = props.setPlayersrc;
   const setPage = props.setPage;
   
   useEffect(() => {
@@ -227,9 +228,12 @@ const TestingPage = (props) => {
                   className={classes.downloadbutton}
                   variant='contained'
                   startIcon={<GetAppIcon />}
-                  onClick={() => {
+                  onClick={async () => {
                     console.log(songHash);
-                    downloadAudioIPFS(songHash);
+                    let x = await downloadAudioIPFS(songHash)
+                    console.log(x)
+                    setPlayersrc(x);
+                    // downloadAudioIPFS(songHash);
                   }}
                 >
                   Download

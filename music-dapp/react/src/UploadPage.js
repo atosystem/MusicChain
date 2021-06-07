@@ -124,21 +124,45 @@ const UploadPage = (props) => {
   ])
   const [pendingMsg, setPendingMsg] = useState('');
   const [uploadPending,setUploadPending] = useState(false);
-  const showResult = (data) => {
-    setMatchResults(data.map((r)=>{
-
-      return  {
-        "name": "song1",
-        "artist": "artist1",
-        "ipfs_hash": r.song_hash,
-        "uploader": "user1",
-        "dist": r.dist,
-        "exact" : false
-      }
-    }).sort((x)=>-Number(x.dist)))
+  const showResult = async (data) => {
+    data.sort((x,y)=>(Number(x.dist) - Number(y.dist)));
+    console.log(data)
+    for (let i=0;i<data.length;i++){
+      const result_from_chain = await getMusicByHash(data[i].song_hash)
+      data[i].name = result_from_chain.name;
+      data[i].artist = result_from_chain.artist;
+      data[i].coverFrom = result_from_chain.coverFrom;
+      data[i].name = result_from_chain.name;
+      data[i].ipfs_hash = data[i].song_hash;
+      data[i].uploader =  result_from_chain.uploader;
+      data[i].uploadTime = result_from_chain.uploadTime;
+      // data[i].dist = r.dist;
+      // data[i].exact =r.exact;
+    }
+    // const r = await data.map(async (r)=>{
+    //   const result_from_chain = await getMusicByHash(r.song_hash)
+    //   console.log("result_from_chain",result_from_chain)
+    //   return  {
+    //     "name": result_from_chain.name,
+    //     "artist": result_from_chain.artist,
+    //     "coverFrom": result_from_chain.coverFrom,
+    //     "ipfs_hash": r.song_hash,
+    //     "uploader": result_from_chain.uploader,
+    //     "uploadTime" : result_from_chain.uploadTime,
+    //     "dist": r.dist,
+    //     "exact" : r.exact
+    //   }
+    // }).sort((x)=>-Number(x.dist))
+    console.log(data)
+    setMatchResults(data)
   }
 
-  
+  const getMusicByHash = async (h) => {
+    const result = await contract.methods
+      .getMusicByHash(h)
+      .call();
+    return result;
+  };
 
 
 
@@ -185,18 +209,27 @@ const UploadPage = (props) => {
         { withCredentials: true }
       );
       source.addEventListener('message', (message) => {
+        // let mydata = JSON.stringify(JSON.parse(message.data))
         console.log('Got', message.data);
         let msg_obj = JSON.parse(message.data);
-        setBackendInfo(backendInfo.concat([msg_obj]))
+        // setBackendInfo(backendInfo.concat([JSON.parse(JSON.stringify(msg_obj))]))
+        // setBackendInfo(backendInfo.push(msg_obj))
+        setBackendInfo(backendInfo.concat(JSON.parse(JSON.stringify(msg_obj))))
         
-        if (msg_obj.status === 'done') {
+        if (msg_obj.status === 'saved_query_hpcp') {
           
           source.close();
           setUploadPending(false);
+          uplaodMusicBlockchain(retHash);
         } else if (msg_obj.status === 'matching_results') {
           // let x = { "status": "matching_results", "payload": [{ "song_hash": "QmRhPHUnNHUodTJb5QciUj6zuEHZZd5fFVTBoJnUTwKh9N", "dist": 0.22824497520923615, "exact": false }, { "song_hash": "QmY3vX8TRHvM8RsgJCjHP4FVRNq1CgC6poTPUBxEHRRhkw", "dist": 0.15082646906375885, "exact": false }] }
           showResult(msg_obj.payload)
+        } else  if (msg_obj.status === 'music_exist') {
+          source.close();
+          setUploadPending(false);
+          callAlert("This music is uploaded before")
         } else {
+          
           // setFingerprstatus(message.data);
         }
         console.log("backendInfo",backendInfo)
@@ -299,7 +332,9 @@ const UploadPage = (props) => {
               {/* {uploadPending && <CircularProgress />} */}
               {backendInfo.length ? backendInfo.map((b,ind)=>{
                 return (
-                  <Alert key={ind} severity="success">{b.status}</Alert>
+                  <Alert key={ind} severity="success">{b.status}
+                  
+                  </Alert>
                 )
               }) 
               
