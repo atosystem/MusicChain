@@ -232,7 +232,8 @@ const TestingPage = (props) => {
                     console.log(songHash);
                     let x = await downloadAudioIPFS(songHash)
                     console.log(x)
-                    setPlayersrc(x);
+                    // setPlayersrc(x);
+                    document.getElementById('music-play').src = x;
                     // downloadAudioIPFS(songHash);
                   }}
                 >
