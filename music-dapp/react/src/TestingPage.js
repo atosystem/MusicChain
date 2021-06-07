@@ -73,8 +73,11 @@ const TestingPage = (props) => {
   const accounts = props.accounts;
   const contract = props.contract;
   const setPage = props.setPage;
-
-  setPage("Test");
+  
+  useEffect(() => {
+    setPage("Test");
+  },[]);
+  
 
 
   // states

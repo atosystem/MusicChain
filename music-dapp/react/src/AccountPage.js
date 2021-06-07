@@ -35,8 +35,11 @@ const AccountPage = (props) => {
   const accounts = props.accounts;
   const contract = props.contract;
   const setPage = props.setPage;
+  
+  useEffect(() => {
+    setPage("Account");
+  },[]);
 
-  setPage("Account");
 
   return (
     <Container maxWidth="lg" className={classes.container} >

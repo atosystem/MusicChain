@@ -3,12 +3,17 @@ import { uploadAudioIPFS } from './ipfs/upload';
 import clsx from 'clsx';
 
 import {
-  makeStyles, 
-  Container, Grid, Paper, 
-  Typography, TextField, Button
+  makeStyles,
+  Container, Grid, Paper,
+  Typography, TextField, Button, Snackbar, CircularProgress
 } from '@material-ui/core';
 
+import Alert from '@material-ui/lab/Alert';
+// import {} from '@material-ui/lab/Alert';
+
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+
+import MatchingResultList from './components/MatchingResultList'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -30,7 +35,13 @@ const useStyles = makeStyles((theme) => ({
   },
   // Upload Box style
   uploadBoxFixedHeight: {
-    height: 320,
+    // height: 420,
+  },
+  backendInfoDisplay :{
+    margin: theme.spacing(2),
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    // width: '36ch',
   },
   inputForm: {
     '& .MuiTextField-root': {
@@ -38,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(4),
       marginRight: theme.spacing(4),
       width: '36ch',
-    }, 
+    },
   },
   uploadinput: {
     display: 'none'
@@ -60,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
     height: '5ch',
-  } 
+  }
 }))
 
 
@@ -73,8 +84,9 @@ const UploadPage = (props) => {
   const accounts = props.accounts;
   const contract = props.contract;
   const setPage = props.setPage;
-
-  setPage("Upload");
+  useEffect(() => {
+    setPage("Upload");
+  },[]);
 
   // states
   const [songname, setSongName] = useState('');
@@ -83,8 +95,50 @@ const UploadPage = (props) => {
   const [songHash, setSongHash] = useState('');
   const [fileTextField, setFileTextField] = useState("you haven't select a file yet...");
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
-  const [matchresult, setMatchresult] = useState('no file yet');
+  const [backendInfo, setBackendInfo] = useState([]);
 
+  // for alert msg
+  const [alertmsg, setAlermsg] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const handleCloseAlertMsg = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
+  const callAlert = (msg) => {
+    setAlermsg(msg);
+    setOpenAlert(true);
+  }
+
+  // for HPCP matching progress UI
+  const [matchresults, setMatchResults] = useState([
+    // {
+    //   "name": "song1",
+    //   "artist": "artist1",
+    //   "ipfs_hash": "hash ipfs",
+    //   "uploader": "user1",
+    //   "dist": "cover_dist1",
+    //   "exact" : false
+    // }
+  ])
+  const [pendingMsg, setPendingMsg] = useState('');
+  const [uploadPending,setUploadPending] = useState(false);
+  const showResult = (data) => {
+    setMatchResults(data.map((r)=>{
+
+      return  {
+        "name": "song1",
+        "artist": "artist1",
+        "ipfs_hash": r.song_hash,
+        "uploader": "user1",
+        "dist": r.dist,
+        "exact" : false
+      }
+    }).sort((x)=>-Number(x.dist)))
+  }
+
+  
 
 
 
@@ -106,24 +160,24 @@ const UploadPage = (props) => {
     // console.log(`contract: ${contract}`);
     // Force user to fill these input field
     if (!songname) {
-      alert('You have to set the SONG name!');
+      callAlert('You have to set the SONG name!');
       return;
     }
     if (!songartist) {
-      alert('You have to set the ARTIST name!');
+      callAlert('You have to set the ARTIST name!');
       return;
     }
     if (!songdata.selectedFile) {
-      alert('You have to upload a file!');
+      callAlert('You have to upload a file!');
       return;
     }
 
     if (songdata.selectedFile.size >= 100000000) {
-      alert('The file limit is 100 MB!');
+      callAlert('The file limit is 100 MB!');
       setSongData({ selectedFile: null });
       return;
     }
-
+    setUploadPending(true);
     uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
       setSongHash(retHash);
       const source = new EventSource(
@@ -133,16 +187,22 @@ const UploadPage = (props) => {
       source.addEventListener('message', (message) => {
         console.log('Got', message.data);
         let msg_obj = JSON.parse(message.data);
+        setBackendInfo(backendInfo.concat([msg_obj]))
+        
         if (msg_obj.status === 'done') {
+          
           source.close();
+          setUploadPending(false);
         } else if (msg_obj.status === 'matching_results') {
-          setMatchresult(message.data);
+          // let x = { "status": "matching_results", "payload": [{ "song_hash": "QmRhPHUnNHUodTJb5QciUj6zuEHZZd5fFVTBoJnUTwKh9N", "dist": 0.22824497520923615, "exact": false }, { "song_hash": "QmY3vX8TRHvM8RsgJCjHP4FVRNq1CgC6poTPUBxEHRRhkw", "dist": 0.15082646906375885, "exact": false }] }
+          showResult(msg_obj.payload)
         } else {
-          setFingerprstatus(message.data);
+          // setFingerprstatus(message.data);
         }
+        console.log("backendInfo",backendInfo)
       });
 
-      uplaodMusicBlockchain(retHash);
+      // uplaodMusicBlockchain(retHash);
     });
 
     // reset input data
@@ -154,10 +214,15 @@ const UploadPage = (props) => {
 
   return (
     <Container maxWidth="lg" className={classes.container} >
+      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseAlertMsg}>
+        <Alert onClose={handleCloseAlertMsg} severity="error">
+          {alertmsg}
+        </Alert>
+      </Snackbar>
       <Grid container spacing={6}>
         <Grid item xs={12} >
           <Paper className={UploadPaperHeight}>
-            <Typography component="h2" variant="h6" gutterBottom style={{color: 'white', fontSize: 20}}>
+            <Typography component="h2" variant="h6" gutterBottom style={{ color: 'white', fontSize: 20 }}>
               Start upload your music!
             </Typography>
 
@@ -172,7 +237,8 @@ const UploadPage = (props) => {
                   variant='outlined'
                   size='small'
                   onChange={(event) => {
-                    setSongName(event.target.value)}
+                    setSongName(event.target.value)
+                  }
                   }
                 />
                 <TextField
@@ -183,7 +249,7 @@ const UploadPage = (props) => {
                   multiline
                   variant='outlined'
                   size='small'
-                  onChange={(event)=> {
+                  onChange={(event) => {
                     setSongArtist(event.target.value)
                   }}
                 />
@@ -207,7 +273,7 @@ const UploadPage = (props) => {
                 </Button>
               </label>
 
-              <TextField 
+              <TextField
                 className={classes.fileinput}
                 id='file-textfield'
                 label='File Name'
@@ -229,10 +295,23 @@ const UploadPage = (props) => {
                 Upload
               </Button>
             </div>
+            <div className={classes.backendInfoDisplay}>
+              {/* {uploadPending && <CircularProgress />} */}
+              {backendInfo.length ? backendInfo.map((b,ind)=>{
+                return (
+                  <Alert key={ind} severity="success">{b.status}</Alert>
+                )
+              }) 
+              
+              
+              : null}
+            </div>
+            
+            { backendInfo.length ? <MatchingResultList rows={matchresults}/> : null}
           </Paper>
         </Grid>
       </Grid>
-      
+
     </Container>
   )
 }

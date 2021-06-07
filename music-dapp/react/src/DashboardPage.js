@@ -36,7 +36,10 @@ const DashboardPage = (props) => {
   const contract = props.contract;
   const setPage = props.setPage;
 
-  setPage("DashBoard");
+  useEffect(() => {
+    setPage("DashBoard");
+  },[]);
+
 
   return (
     <Container maxWidth="lg" className={classes.container} >
