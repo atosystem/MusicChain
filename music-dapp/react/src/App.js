@@ -1,7 +1,8 @@
 import { Input } from 'antd';
 import getWeb3 from './utils/getWeb3';
 import React, { useState, useEffect } from 'react';
-import { uploadAudioIPFS } from './ipfs/upload';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
 import { downloadAudioIPFS } from './ipfs/download';
 import MusicDAppContract from './build/contracts/MusicDApp.json';
 
@@ -13,10 +14,12 @@ import {
   TextField, Link, Button, IconButton
 } from '@material-ui/core';
 
-import Upload from './components/Upload';
-import Dashboard from './components/Dashboard';
-import Account from './components/Account';
-import Testing from './components/Testing';
+
+import UploadPage from './UploadPage';
+import TestingPage from './TestingPage';
+import AccountPage from './AccountPage';
+import DashboardPage from './DashboardPage';
+
 import { mainListItems, secondaryListItems } from './components/DrawerListItems';
 
 import MenuIcon from '@material-ui/icons/Menu';
@@ -103,22 +106,14 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [page, setPage] = useState("Upload");
+  const [page, setPage] = useState("Dashboard");
 
-  const [songname, setSongName] = useState('');
-  const [songartist, setSongArtist] = useState('');
-  const [songdata, setSongData] = useState({ selectedFile: null });
-  const [fileTextField, setFileTextField] = useState("you haven't select a file yet...");
   const [songHash, setSongHash] = useState('');
-  const [fingerprstatus, setFingerprstatus] = useState('no file yet');
-  const [matchresult, setMatchresult] = useState('no file yet');
   const [web3, setWeb3] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState({});
 
-  // testing
-  const [searchMusic, setSearchMusic] = useState('');
-  const [searchArtist, setSearchArtist] = useState('');
+
 
   useEffect(async () => {
     try {
@@ -148,183 +143,84 @@ function App() {
     setDrawerOpen(false);
   };
 
-  const uplaodMusicBlockchain = async (retHash) => {
-    try {
-      const music = await contract.methods
-        .uploadMusic(retHash, songname, songartist, 'None')
-        .send({ from: accounts[0] });
-
-      console.log(music);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleUploads = async () => {
-    // console.log(`web3: ${web3}`);
-    // console.log(`accounts: ${accounts}`);
-    // console.log(`contract: ${contract}`);
-    // Force user to fill these input field
-    if (!songname) {
-      alert('You have to set the SONG name!');
-      return;
-    }
-    if (!songartist) {
-      alert('You have to set the ARTIST name!');
-      return;
-    }
-    if (!songdata.selectedFile) {
-      alert('You have to upload a file!');
-      return;
-    }
-
-    if (songdata.selectedFile.size >= 100000000) {
-      alert('The file limit is 100 MB!');
-      setSongData({ selectedFile: null });
-      return;
-    }
-
-    uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
-      setSongHash(retHash);
-      const source = new EventSource(
-        `http://localhost:3001/processupload?h=${retHash}`,
-        { withCredentials: true }
-      );
-      source.addEventListener('message', (message) => {
-        console.log('Got', message.data);
-        let msg_obj = JSON.parse(message.data);
-        if (msg_obj.status === 'done') {
-          source.close();
-        } else if (msg_obj.status === 'matching_results') {
-          setMatchresult(message.data);
-        } else {
-          setFingerprstatus(message.data);
-        }
-      });
-
-      uplaodMusicBlockchain(retHash);
-    });
-
-    // reset input data
-    setSongName('');
-    setSongArtist('');
-    setFileTextField("you haven't select a file yet...");
-  };
-
-  // components props passed down
-  const uploadProps = {
-    songname: songname, setSongName: setSongName,
-    songartist: songartist, setSongArtist: setSongArtist,
-    songdata: songdata, setSongData: setSongData,
-    fileTextField: fileTextField, setFileTextField: setFileTextField,
-    handleUploads: handleUploads,
-  }
-
-  const testingProps = {
-    searchMusic: searchMusic, setSearchMusic: setSearchMusic,
-    searchArtist: searchArtist, setSearchArtist: setSearchArtist,
-    songHash: songHash, setSongHash: setSongHash,
-    accounts: accounts,
-    contract: contract,
-    downloadAudioIPFS: downloadAudioIPFS,
-  }
-
-  // define routes of content pages
-  let contentComponent = null;
-  switch (page) {
-    case "Dashboard":
-      contentComponent = Dashboard();
-      break;
-    case "Upload":
-      contentComponent = Upload(uploadProps);
-      break;
-    case "Account":
-      contentComponent = Account();
-      break;
-    case "Testing":
-      contentComponent = Testing(testingProps);
-      break;
-    default:
-      contentComponent = Upload(uploadProps);
-  }
-
-  // return (
-  //   <div className='App'>
-  //     <div className='App-main'>
-  //       <div className='App-interface'>
-  //         <div className='upload-box'>
-  //           <div className='content'>
-
-  //             <div className='info-box'>
-  //               <span>FingerPrint processing status :</span>
-  //               {fingerprstatus}
-  //               <br />
-  //               {matchresult}
-  //             </div>
-
-              
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
+    <Router>
+      <div className={classes.root}>
+        <CssBaseline />
 
-      <AppBar position="absolute" className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, drawerOpen && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
+        <AppBar position="absolute" className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}>
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, drawerOpen && classes.menuButtonHidden)}
+            >
+              <MenuIcon />
+            </IconButton>
 
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {page}
-          </Typography>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              {page}
+            </Typography>
 
-          <IconButton color="inherit">
-            <Badge badgeContent={3} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+            <IconButton color="inherit">
+              <Badge badgeContent={3} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !drawerOpen && classes.drawerPaperClose),
-        }}
-        open={drawerOpen}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon className={classes.chevronleftIcon}/>
-          </IconButton>
-        </div>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: clsx(classes.drawerPaper, !drawerOpen && classes.drawerPaperClose),
+          }}
+          open={drawerOpen}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon className={classes.chevronleftIcon} />
+            </IconButton>
+          </div>
 
-        <Divider />
-        <List className={classes.listItems}>{mainListItems(setPage)}</List>
-        <Divider />
-        <List className={classes.listItems}>{secondaryListItems(setPage)}</List>
-      </Drawer>
+          <Divider />
+          <List className={classes.listItems}>{mainListItems(setPage)}</List>
+          <Divider />
+          <List className={classes.listItems}>{secondaryListItems(setPage)}</List>
+        </Drawer>
 
-      {/* Main content of each page */}
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div>{contentComponent}</div>
-      </main>
 
-      {/* Could design a music player in the footer */}
-    </div>
+        {/* Main content of each page */}
+
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Switch>
+            <Route exact path="/">
+              <DashboardPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+            </Route>
+            <Route exact path="/test">
+              <TestingPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+            </Route>
+            <Route exact path="/dashboard">
+              <DashboardPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+            </Route>
+            <Route exact path="/upload">
+              <UploadPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+            </Route>
+            <Route exact path="/account">
+              <AccountPage web3={web3} contract={contract} accounts={accounts} setPage={setPage} />
+            </Route>
+          </Switch>
+          {/* <div>{contentComponent}</div> */}
+
+        </main>
+
+        {/* Could design a music player in the footer */}
+      </div>
+    </Router>
   );
 }
 
