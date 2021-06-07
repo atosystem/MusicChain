@@ -70,7 +70,7 @@ formatoutput("start_matching_process")
 results = []
 exact_match = False
 for i, hpcp_file in enumerate(all_hpcp_files):
-    formatoutput("matcing", {"current_idx": i+1,
+    formatoutput("matching", {"current_idx": i+1,
                              "total_len": len(all_hpcp_files)})
     # print("Calculating {}".format(os.path.basename(hpcp_file)),flush=True)
     with open(hpcp_file, "rb") as f:
