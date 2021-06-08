@@ -3,7 +3,11 @@ import clsx from 'clsx';
 
 import {
   makeStyles,
-  Container, Box, Grid, Paper
+  Container,
+  Box,
+  Grid,
+  Paper,
+  Button,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,37 +41,27 @@ const DashboardPage = (props) => {
   const setPage = props.setPage;
 
   useEffect(() => {
-    setPage("DashBoard");
-  },[]);
-
+    setPage('DashBoard');
+  }, []);
 
   return (
-    <Container maxWidth="lg" className={classes.container} >
+    <Container maxWidth='lg' className={classes.container}>
       <Grid container spacing={3}>
-
-        <Grid item xs={12} md={8} lg={6} >
-          <Paper className={fixedHeightPaper}>
-
-          </Paper>
+        <Grid item xs={12} md={8} lg={6}>
+          <Paper className={fixedHeightPaper}></Paper>
         </Grid>
 
         <Grid item xs={12} md={4} lg={6}>
-          <Paper className={fixedHeightPaper}>
-
-          </Paper>
+          <Paper className={fixedHeightPaper}></Paper>
         </Grid>
 
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
-
-          </Paper>
+          <Paper className={classes.paper}></Paper>
         </Grid>
       </Grid>
-      <Box pt={4}>
-
-      </Box>
+      <Box pt={4}></Box>
     </Container>
-  )
-}
+  );
+};
 
 export default DashboardPage;

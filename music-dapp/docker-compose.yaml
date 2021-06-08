@@ -6,26 +6,25 @@ services:
     networks:
       - music_Dapp_network
     ports:
-      - "3001:3001"
+      - '3001:3001'
     volumes:
       - ./docker/backend/tmp_files:/backend/tmp_files
       - ./docker/backend/hpcp_data:/backend/hpcp_data
-  ipfs:
-    build:
-      context: ./docker/ipfs
-    # image: ipfs/go-ipfs:release
-    container_name: ipfs_host
-    volumes:
-      - ./docker/ipfs/export:/export
-      - ./docker/ipfs/ipfs_data:/data/ipfs
-    networks:
-      - music_Dapp_network
-    ports:
-      - '4001:4001'
-      - '4001:4001/udp'
-      - '127.0.0.1:8080:8080'
-      - '127.0.0.1:5001:5001'
-    
+  # ipfs:
+  #   build:
+  #     context: ./docker/ipfs
+  #   # image: ipfs/go-ipfs:release
+  #   container_name: ipfs_host
+  #   volumes:
+  #     - ./docker/ipfs/export:/export
+  #     - ./docker/ipfs/ipfs_data:/data/ipfs
+  #   networks:
+  #     - music_Dapp_network
+  #   ports:
+  #     - '4001:4001'
+  #     - '4001:4001/udp'
+  #     - '127.0.0.1:8080:8080'
+  #     - '127.0.0.1:5001:5001'
 
   # python:
   #   build:
@@ -36,7 +35,7 @@ services:
   #     - db
   #   networks:
   #     - db_network
-    # ports:
-    #   - "3001:3001"
+  # ports:
+  #   - "3001:3001"
 networks:
   music_Dapp_network:
