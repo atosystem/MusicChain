@@ -4,8 +4,12 @@ import { downloadAudioIPFS } from './ipfs/download';
 
 import {
   makeStyles,
-  Container, Grid, Paper,
-  Typography, TextField, Button
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  TextField,
+  Button,
 } from '@material-ui/core';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -74,18 +78,16 @@ const TestingPage = (props) => {
   const contract = props.contract;
   const setPlayersrc = props.setPlayersrc;
   const setPage = props.setPage;
-  
-  useEffect(() => {
-    setPage("Test");
-  },[]);
-  
 
+  useEffect(() => {
+    setPage('Test');
+  }, []);
 
   // states
   const [songHash, setSongHash] = useState('');
   const [searchMusic, setSearchMusic] = useState('');
   const [searchArtist, setSearchArtist] = useState('');
-
+  const [searchHash, setSearchHash] = useState('');
 
   const testGetMusic = async () => {
     const result = await contract.methods
@@ -115,25 +117,71 @@ const TestingPage = (props) => {
     console.log(result);
   };
 
-  const testUserLogin = async () => {
-    const result = await contract.methods.login().send({ from: accounts[0] });
+  const testRegister = async () => {
+    const result = await contract.methods
+      .register()
+      .send({ from: accounts[0] });
     console.log(result);
   };
 
+  const testUserExists = async () => {
+    const result = await contract.methods.userExists().call();
+    console.log(result);
+  };
+
+  const testUserBalance = async () => {
+    const result = await contract.methods.getUserBalance().call();
+    console.log(result);
+  };
+
+  const testGetMusicByHash = async () => {
+    const result = await contract.methods.getMusicByHash(searchHash).call();
+    console.log(result);
+  };
+
+  const testGetUploadMusicList = async () => {
+    const result = await contract.methods.getUploadMusicList().call();
+    console.log(result);
+  };
+
+  const testGetBoughtMusicList = async () => {
+    const result = await contract.methods.getBoughtMusicList().call();
+    console.log(result);
+  };
+
+  const testFindUploadMusic = async () => {
+    const result = await contract.methods.findUploadMusic(searchHash).call();
+    console.log(result);
+  };
+
+  const testMsgSender = async () => {
+    const result = await contract.methods.returnMsgSender().call();
+    console.log(result);
+  };
+
+  // const testUserLogin = async () => {
+  //   const result = await contract.methods.
+  // }
+
   return (
-    <Container maxWidth="lg" className={classes.container} >
+    <Container maxWidth='lg' className={classes.container}>
       <Grid container spacing={6}>
-        <Grid item xs={12} md={8} lg={12} >
+        <Grid item xs={12} md={8} lg={12}>
           <Paper className={fixedHeightPaper}>
-            <Typography component="h2" variant="h6" gutterBottom style={{ color: 'white', fontSize: 20 }}>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+              style={{ color: 'white', fontSize: 20 }}
+            >
               Testing Blockchain
-              </Typography>
+            </Typography>
 
             <form className={classes.inputForm} noValidate autoComplete='off'>
               <div>
                 <TextField
-                  id="name-textfield"
-                  label="Name"
+                  id='name-textfield'
+                  label='Name'
                   placeholder="Type song's name..."
                   multiline
                   variant='outlined'
@@ -144,8 +192,8 @@ const TestingPage = (props) => {
                   }}
                 />
                 <TextField
-                  id="artist-textfield"
-                  label="Artist"
+                  id='artist-textfield'
+                  label='Artist'
                   placeholder="Type song's artist..."
                   multiline
                   variant='outlined'
@@ -155,64 +203,148 @@ const TestingPage = (props) => {
                     setSearchArtist(event.target.value);
                   }}
                 />
+                <TextField
+                  id='music-hash-textfield'
+                  label='Hash'
+                  placeholder="Type song's hash..."
+                  multiline
+                  variant='outlined'
+                  size='small'
+                  value={searchHash}
+                  onChange={(event) => {
+                    setSearchHash(event.target.value);
+                  }}
+                />
               </div>
 
               <div className={classes.testingButtons}>
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => {
                     testGetMusic();
                   }}
                 >
                   Test Get Music
-                  </Button>
+                </Button>
 
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => {
                     testGetMusicArtistList();
                   }}
                 >
                   Test Get Music List
-                  </Button>
+                </Button>
 
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => {
                     testGetArtistMusicList();
                   }}
                 >
                   Test Get Artist List
-                  </Button>
+                </Button>
 
                 <Button
-                  variant="contained"
+                  variant='contained'
+                  onClick={() => {
+                    testMsgSender();
+                  }}
+                >
+                  Test Msg Sender
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testUserExists();
+                  }}
+                >
+                  Test User Exists
+                </Button>
+
+                <Button
+                  variant='contained'
                   onClick={() => {
                     testGetUserInfo();
                   }}
                 >
                   Test Get User Info
-                  </Button>
+                </Button>
 
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => {
-                    testUserLogin();
+                    testGetUploadMusicList();
                   }}
                 >
-                  Test User Login
-                  </Button>
+                  Test Get User Upload Music List
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetBoughtMusicList();
+                  }}
+                >
+                  Test Get User Bought Music List
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testFindUploadMusic();
+                  }}
+                >
+                  Test if user upload this music
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testRegister();
+                  }}
+                >
+                  Test Register
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testUserBalance();
+                  }}
+                >
+                  Test User Balance
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetMusicByHash();
+                  }}
+                >
+                  Test Get Music By Hash
+                </Button>
               </div>
             </form>
 
-            <Typography component="h2" variant="h6" gutterBottom style={{ color: 'white', fontSize: 20 }}>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+              style={{ color: 'white', fontSize: 20 }}
+            >
               Download Music
-              </Typography>
+            </Typography>
 
-            <form className={classes.downloadForm} noValidate autoComplete='off'>
+            <form
+              className={classes.downloadForm}
+              noValidate
+              autoComplete='off'
+            >
               <div>
                 <TextField
-                  id="artist-textfield"
+                  id='artist-textfield'
                   label="Song's Hash"
                   placeholder="Type song's hash value..."
                   multiline
@@ -230,21 +362,26 @@ const TestingPage = (props) => {
                   startIcon={<GetAppIcon />}
                   onClick={async () => {
                     console.log(songHash);
-                    let x = await downloadAudioIPFS(songHash)
-                    console.log(x)
+                    let x = await downloadAudioIPFS(songHash);
+                    console.log(x);
                     // setPlayersrc(x);
                     document.getElementById('music-play').src = x;
                     // downloadAudioIPFS(songHash);
                   }}
                 >
                   Download
-                  </Button>
+                </Button>
               </div>
             </form>
 
-            <Typography component="h2" variant="h6" gutterBottom style={{ color: 'white', fontSize: 20 }}>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+              style={{ color: 'white', fontSize: 20 }}
+            >
               Music Play
-              </Typography>
+            </Typography>
 
             <div>
               <audio
@@ -254,16 +391,14 @@ const TestingPage = (props) => {
                 id='music-play'
               >
                 Your browser does not support the
-                  <code>audio</code> element.
-                </audio>
+                <code>audio</code> element.
+              </audio>
             </div>
           </Paper>
         </Grid>
-
       </Grid>
-
     </Container>
-  )
-}
+  );
+};
 
 export default TestingPage;

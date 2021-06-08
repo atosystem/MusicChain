@@ -52,17 +52,33 @@ contract MusicDApp is DEX {
     // Public methods
 
     // Retrieve basic user information
-    function login() public returns (string[] memory) {
-        if (users[msg.sender].isValid) {
-            // User exists
-            return getUploadMusicList();
-        } else {
+    function returnMsgSender() public view returns (address) {
+        return msg.sender;
+    }
+
+    function userExists() public view returns (bool) {
+        return users[msg.sender].isValid;
+    }
+
+    function getUserInfo() public view returns (User memory) {
+        return users[msg.sender];
+    }
+
+    function getUserBalance() public view returns (uint256) {
+        return token.balanceOf(msg.sender);
+    }
+
+    function register() public returns (User memory) {
+        if (!userExists()) {
             // Give 100 token for new user
             uint256 dexBalance = token.balanceOf(address(this));
-            require(100 <= dexBalance, "Not enough tokens in the reserve");
+            require(10000 <= dexBalance, "Not enough tokens in the reserve");
             token.transfer(msg.sender, 10000);
             users[msg.sender].isValid = true;
-            return users[msg.sender].bought_music_list;
+            User memory user = users[msg.sender];
+            return user;
+        } else {
+            return users[msg.sender];
         }
     }
 
@@ -72,14 +88,6 @@ contract MusicDApp is DEX {
 
     function getBoughtMusicList() public view returns (string[] memory) {
         return users[msg.sender].bought_music_list;
-    }
-
-    function getUserInfo() public view returns (User memory) {
-        return users[msg.sender];
-    }
-
-    function getUserBalance() public view returns (uint256) {
-        return token.balanceOf(msg.sender);
     }
 
     function findUploadMusic(string memory _ipfsHash)
@@ -128,8 +136,6 @@ contract MusicDApp is DEX {
         string memory _artist,
         string memory _coverFrom
     ) public {
-        users[msg.sender].upload_music_list.push(_ipfsHash);
-
         Music memory _music =
             Music(
                 msg.sender,
@@ -141,11 +147,15 @@ contract MusicDApp is DEX {
                 _coverFrom
             );
 
+        // Global state update
         musics.push(_music);
         music[_name][_artist] = _music;
         music_hash[_ipfsHash] = _music;
         music_artist_list[_name].push(_music);
         artist_music_list[_artist].push(_music);
+
+        // User state update
+        users[msg.sender].upload_music_list.push(_ipfsHash);
     }
 
     function getMusic(string memory _name, string memory _artist)

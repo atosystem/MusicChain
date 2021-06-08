@@ -166,6 +166,8 @@ function App() {
     setWeb3(web3Instance);
     setAccounts(accountsInstance);
     setContract(contractInstance);
+    console.log(accountsInstance);
+    console.log(accounts);
   };
 
   const handleDrawerOpen = () => {
