@@ -27,12 +27,17 @@ import {
   Link,
   Button,
   IconButton,
+  Snackbar,
 } from '@material-ui/core';
+
+import Alert from '@material-ui/lab/Alert';
 
 import UploadPage from './UploadPage';
 import TestingPage from './TestingPage';
 import AccountPage from './AccountPage';
 import DashboardPage from './DashboardPage';
+import SearchPage from './SearchPage';
+import SongDetailPage from './SongDetailPage';
 
 import {
   mainListItems,
@@ -143,6 +148,9 @@ function App() {
   //   //   console.error(error);
   //   // }
   // });
+  useEffect(async () => {
+    await connectWeb3();
+  }, [])
 
   const getEthWeb3 = async () => {
     await window.ethereum.send('eth_requestAccounts');
@@ -177,10 +185,34 @@ function App() {
     setDrawerOpen(false);
   };
 
+  // for alert msg
+  const [alertmsg, setAlermsg] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const handleCloseAlertMsg = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
+  const callAlert = (msg) => {
+    setAlermsg(msg);
+    setOpenAlert(true);
+  };
+
   return (
     <Router>
       <div className={classes.root}>
         <CssBaseline />
+
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={6000}
+          onClose={handleCloseAlertMsg}
+        >
+          <Alert onClose={handleCloseAlertMsg} severity='error'>
+            {alertmsg}
+          </Alert>
+        </Snackbar>
 
         <AppBar
           position='absolute'
@@ -210,7 +242,18 @@ function App() {
               {page}
             </Typography>
 
+            <Typography
+              component='h1'
+              variant='h6'
+              color='inherit'
+              // noWrap
+              className={classes.title}
+            >
+              {accounts.length ? accounts[0] : "no account selected yet"}
+            </Typography>
+
             <div>
+
               <Button
                 variant='contained'
                 onClick={async () => {
@@ -266,8 +309,26 @@ function App() {
                 setPage={setPage}
               />
             </Route>
+            <Route exact path='/search'>
+              <SearchPage
+                web3={web3}
+                contract={contract}
+                accounts={accounts}
+                setPage={setPage}
+                setPlayersrc={setPlayersrc}
+              />
+            </Route>
             <Route exact path='/test'>
               <TestingPage
+                web3={web3}
+                contract={contract}
+                accounts={accounts}
+                setPage={setPage}
+                setPlayersrc={setPlayersrc}
+              />
+            </Route>
+            <Route exact path='/detail/:queryhash'>
+              <SongDetailPage
                 web3={web3}
                 contract={contract}
                 accounts={accounts}
@@ -289,6 +350,7 @@ function App() {
                 contract={contract}
                 accounts={accounts}
                 setPage={setPage}
+                callAlert={callAlert}
               />
             </Route>
             <Route exact path='/account'>

@@ -168,6 +168,23 @@ contract MusicDApp is DEX {
         return _music;
     }
 
+    function searchMusic(string memory _name, string memory _artist)
+        public
+        view
+        returns (Music[] memory)
+    {
+        Music[] memory returnList = new Music[](musics.length);
+        uint ind = 0;
+        for (uint i=0; i<musics.length; i++) {
+            if (str_contains(_name,musics[i].name) || str_contains(_artist,musics[i].artist))
+            {
+                returnList[ind] = musics[i];
+                i = i + 1;
+            }
+        }
+        return returnList;
+    }
+
     function getMusicByHash(string memory _ipfsHash)
         public
         view
@@ -268,8 +285,9 @@ contract MusicDApp is DEX {
             if (count >= 7) {
                 break;
             }
-
-            transferToken(sender, uploader, chain[count]);
+            if (!(sender==uploader)) {
+                transferToken(sender, uploader, chain[count]);
+            }
             // hit the end of the chain
             if (
                 keccak256(abi.encodePacked((_music.coverFrom))) ==
@@ -354,4 +372,27 @@ contract MusicDApp is DEX {
     }
 
     // Private methods
+    // check if string contains in other string
+    function str_contains (string memory what, string memory where) private pure returns (bool){
+        bytes memory whatBytes = bytes (what);
+        bytes memory whereBytes = bytes (where);
+        if (keccak256(abi.encodePacked((what))) == keccak256(abi.encodePacked((where))))
+        {
+            return true;
+        }
+        bool found = false;
+        for (uint i = 0; i < whereBytes.length - whatBytes.length; i++) {
+            bool flag = true;
+            for (uint j = 0; j < whatBytes.length; j++)
+                if (whereBytes [i + j] != whatBytes [j]) {
+                    flag = false;
+                    break;
+                }
+            if (flag) {
+                found = true;
+                break;
+            }
+        }
+        return (found);
+    }
 }

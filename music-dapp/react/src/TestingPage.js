@@ -92,7 +92,7 @@ const TestingPage = (props) => {
   const testGetMusic = async () => {
     const result = await contract.methods
       .getMusic(searchMusic, searchArtist)
-      .call();
+      .call({ from: accounts[0] });
     console.log(result);
     console.log(result.ipfsHash);
     setSongHash(result.ipfsHash);
@@ -101,19 +101,19 @@ const TestingPage = (props) => {
   const testGetMusicArtistList = async () => {
     const result = await contract.methods
       .getMusicArtistList(searchMusic)
-      .call();
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetArtistMusicList = async () => {
     const result = await contract.methods
       .getArtistMusicList(searchArtist)
-      .call();
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetUserInfo = async () => {
-    const result = await contract.methods.getUserInfo().call();
+    const result = await contract.methods.getUserInfo().call({ from: accounts[0] });
     console.log(result);
   };
 
@@ -125,37 +125,37 @@ const TestingPage = (props) => {
   };
 
   const testUserExists = async () => {
-    const result = await contract.methods.userExists().call();
+    const result = await contract.methods.userExists().call({ from: accounts[0] });
     console.log(result);
   };
 
   const testUserBalance = async () => {
-    const result = await contract.methods.getUserBalance().call();
+    const result = await contract.methods.getUserBalance().call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetMusicByHash = async () => {
-    const result = await contract.methods.getMusicByHash(searchHash).call();
+    const result = await contract.methods.getMusicByHash(searchHash).call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetUploadMusicList = async () => {
-    const result = await contract.methods.getUploadMusicList().call();
+    const result = await contract.methods.getUploadMusicList().call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetBoughtMusicList = async () => {
-    const result = await contract.methods.getBoughtMusicList().call();
+    const result = await contract.methods.getBoughtMusicList().call({ from: accounts[0] });
     console.log(result);
   };
 
   const testFindUploadMusic = async () => {
-    const result = await contract.methods.findUploadMusic(searchHash).call();
+    const result = await contract.methods.findUploadMusic(searchHash).call({ from: accounts[0] });
     console.log(result);
   };
 
   const testMsgSender = async () => {
-    const result = await contract.methods.returnMsgSender().call();
+    const result = await contract.methods.returnMsgSender().call({ from: accounts[0] });
     console.log(result);
   };
 

@@ -18,6 +18,8 @@ parser.add_argument('-s', '--searchfiles', nargs='*',
                     'leave blank to search for all')
 args = parser.parse_args()
 
+THRESHOLD_COVER = 0.12
+
 # check if hpcp directory exists
 if not os.path.isdir('hpcp_data'):
     os.mkdir('hpcp_data')
@@ -93,6 +95,7 @@ for i, hpcp_file in enumerate(all_hpcp_files):
             "exact": False
         })
 
+results = sorted(results,key=lambda x:x["dist"])
 formatoutput("matching_results", results)
 
 os.remove(query_filename)
@@ -101,7 +104,11 @@ if not exact_match:
     formatoutput("saving_query_hpcp")
     with open("hpcp_data/{}.hpcp".format(os.path.basename(query_filename).split(".")[0]), "wb") as f:
         pickle.dump(query_hpcp, f, pickle.HIGHEST_PROTOCOL)
-    formatoutput("saved_query_hpcp")
+    
+    if len(results) > 0 and results[0]["dist"] <= THRESHOLD_COVER:
+        formatoutput("saved_query_hpcp",[results[0]["song_hash"]])
+    else:
+        formatoutput("saved_query_hpcp")
     formatoutput("done")
 else:
     formatoutput("music_exist")

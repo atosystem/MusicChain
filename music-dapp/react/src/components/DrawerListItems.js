@@ -6,6 +6,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import BuildIcon from '@material-ui/icons/Build';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {Link} from 'react-router-dom';
 
@@ -17,6 +18,13 @@ export const mainListItems = (setPage) => {
           <DashboardIcon style={{color: 'white'}}/>
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
+      </ListItem>
+
+      <ListItem button component={Link} to="/search">
+        <ListItemIcon>
+          <SearchIcon style={{color: 'white'}}/>
+        </ListItemIcon>
+        <ListItemText primary="Search" />
       </ListItem>
 
       <ListItem button component={Link} to="/account">

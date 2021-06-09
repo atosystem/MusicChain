@@ -89,6 +89,8 @@ const UploadPage = (props) => {
   const accounts = props.accounts;
   const contract = props.contract;
   const setPage = props.setPage;
+  // for alert msg
+  const callAlert = props.callAlert;
   useEffect(() => {
     setPage('Upload');
   }, []);
@@ -104,19 +106,20 @@ const UploadPage = (props) => {
   const [fingerprstatus, setFingerprstatus] = useState('no file yet');
   const [backendInfo, setBackendInfo] = useState([]);
 
-  // for alert msg
-  const [alertmsg, setAlermsg] = useState('');
-  const [openAlert, setOpenAlert] = useState(false);
-  const handleCloseAlertMsg = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenAlert(false);
-  };
-  const callAlert = (msg) => {
-    setAlermsg(msg);
-    setOpenAlert(true);
-  };
+
+  // // for alert msg
+  // const [alertmsg, setAlermsg] = useState('');
+  // const [openAlert, setOpenAlert] = useState(false);
+  // const handleCloseAlertMsg = (event, reason) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
+  //   setOpenAlert(false);
+  // };
+  // const callAlert = (msg) => {
+  //   setAlermsg(msg);
+  //   setOpenAlert(true);
+  // };
 
   // for HPCP matching progress UI
   const [matchresults, setMatchResults] = useState([
@@ -143,36 +146,20 @@ const UploadPage = (props) => {
       data[i].ipfs_hash = data[i].song_hash;
       data[i].uploader = result_from_chain.uploader;
       data[i].uploadTime = result_from_chain.uploadTime;
-      // data[i].dist = r.dist;
-      // data[i].exact =r.exact;
     }
-    // const r = await data.map(async (r)=>{
-    //   const result_from_chain = await getMusicByHash(r.song_hash)
-    //   console.log("result_from_chain",result_from_chain)
-    //   return  {
-    //     "name": result_from_chain.name,
-    //     "artist": result_from_chain.artist,
-    //     "coverFrom": result_from_chain.coverFrom,
-    //     "ipfs_hash": r.song_hash,
-    //     "uploader": result_from_chain.uploader,
-    //     "uploadTime" : result_from_chain.uploadTime,
-    //     "dist": r.dist,
-    //     "exact" : r.exact
-    //   }
-    // }).sort((x)=>-Number(x.dist))
     console.log(data);
     setMatchResults(data);
   };
 
   const getMusicByHash = async (h) => {
-    const result = await contract.methods.getMusicByHash(h).call();
+    const result = await contract.methods.getMusicByHash(h).call({ from: accounts[0] });
     return result;
   };
 
-  const uplaodMusicBlockchain = async (retHash) => {
+  const uploadMusicBlockchain = async (retHash, coverFromHash = 'None') => {
     try {
       const music = await contract.methods
-        .uploadMusic(retHash, songname, songartist, 'None')
+        .uploadMusic(retHash, songname, songartist, coverFromHash)
         .send({ from: accounts[0] });
 
       console.log(music);
@@ -222,7 +209,13 @@ const UploadPage = (props) => {
         if (msg_obj.status === 'saved_query_hpcp') {
           source.close();
           setUploadPending(false);
-          uplaodMusicBlockchain(retHash);
+          if (msg_obj.payload.length > 0) {
+            console.log("coverfrom" + msg_obj.payload[0])
+            uploadMusicBlockchain(retHash, msg_obj.payload[0]);
+          } else {
+            uploadMusicBlockchain(retHash);
+          }
+
         } else if (msg_obj.status === 'matching_results') {
           // let x = { "status": "matching_results", "payload": [{ "song_hash": "QmRhPHUnNHUodTJb5QciUj6zuEHZZd5fFVTBoJnUTwKh9N", "dist": 0.22824497520923615, "exact": false }, { "song_hash": "QmY3vX8TRHvM8RsgJCjHP4FVRNq1CgC6poTPUBxEHRRhkw", "dist": 0.15082646906375885, "exact": false }] }
           showResult(msg_obj.payload);
@@ -247,7 +240,7 @@ const UploadPage = (props) => {
 
   return (
     <Container maxWidth='lg' className={classes.container}>
-      <Snackbar
+      {/* <Snackbar
         open={openAlert}
         autoHideDuration={6000}
         onClose={handleCloseAlertMsg}
@@ -255,7 +248,7 @@ const UploadPage = (props) => {
         <Alert onClose={handleCloseAlertMsg} severity='error'>
           {alertmsg}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Paper className={UploadPaperHeight}>
@@ -344,12 +337,12 @@ const UploadPage = (props) => {
               {/* {uploadPending && <CircularProgress />} */}
               {backendInfo.length
                 ? backendInfo.map((b, ind) => {
-                    return (
-                      <Alert key={ind} severity='success'>
-                        {b.status}
-                      </Alert>
-                    );
-                  })
+                  return (
+                    <Alert key={ind} severity='success'>
+                      {b.status}
+                    </Alert>
+                  );
+                })
                 : null}
             </div>
 
