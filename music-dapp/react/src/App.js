@@ -159,23 +159,23 @@ function App() {
   };
 
   const connectWeb3 = async () => {
-    console.log('Connect');
+    console.log('Connecting');
     const web3Instance = await getEthWeb3();
-    console.log(web3Instance);
+    // console.log(web3Instance);
     const accountsInstance = await web3Instance.eth.getAccounts();
-    console.log(accountsInstance);
+    // console.log(accountsInstance);
     const networkId = await web3Instance.eth.net.getId();
     const deployedNetwork = MusicDAppContract.networks[networkId];
     const contractInstance = new web3Instance.eth.Contract(
       MusicDAppContract.abi,
       deployedNetwork && deployedNetwork.address
     );
-    console.log(contractInstance);
+    // console.log(contractInstance);
     setWeb3(web3Instance);
     setAccounts(accountsInstance);
     setContract(contractInstance);
-    console.log(accountsInstance);
-    console.log(accounts);
+    // console.log(accountsInstance);
+    // console.log(accounts);
   };
 
   const handleDrawerOpen = () => {
