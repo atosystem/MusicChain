@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { downloadAudioIPFS } from './ipfs/download';
 import MusicDAppContract from './build/contracts/MusicDApp.json';
+import MusicCoinContract from './build/contracts/MusicCoin.json';
+import ERC20Contract from './build/contracts/IERC20.json';
 
 import clsx from 'clsx';
 import {
@@ -136,18 +138,8 @@ function App() {
   const [web3, setWeb3] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState({});
-
   const [playersrc, setPlayersrc] = useState('');
 
-  // useEffect(async () => {
-  //   // try {
-  //   // } catch (error) {
-  //   //   // alert(
-  //   //   //   `Failed to load web3, accounts, or contract. Check console for details.`
-  //   //   // );
-  //   //   console.error(error);
-  //   // }
-  // });
   useEffect(async () => {
     await connectWeb3();
   }, [])
@@ -159,23 +151,19 @@ function App() {
   };
 
   const connectWeb3 = async () => {
-    console.log('Connecting');
+    console.log('Connect To Blockchain');
     const web3Instance = await getEthWeb3();
-    // console.log(web3Instance);
     const accountsInstance = await web3Instance.eth.getAccounts();
-    // console.log(accountsInstance);
     const networkId = await web3Instance.eth.net.getId();
     const deployedNetwork = MusicDAppContract.networks[networkId];
     const contractInstance = new web3Instance.eth.Contract(
       MusicDAppContract.abi,
       deployedNetwork && deployedNetwork.address
     );
-    // console.log(contractInstance);
+    
     setWeb3(web3Instance);
     setAccounts(accountsInstance);
     setContract(contractInstance);
-    // console.log(accountsInstance);
-    // console.log(accounts);
   };
 
   const handleDrawerOpen = () => {

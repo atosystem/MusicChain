@@ -1,20 +1,9 @@
 pragma solidity >=0.4.0 <0.9.0;
 
-interface IERC20 {
+interface TokenPool {
     function totalSupply() external view returns (uint256);
 
     function balanceOf(address account) external view returns (uint256);
-
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
-
-    function transfer(address recipient, uint256 amount)
-        external
-        returns (bool);
-
-    function approve(address spender, uint256 amount) external returns (bool);
 
     function transferFrom(
         address sender,
@@ -23,32 +12,26 @@ interface IERC20 {
     ) external returns (bool);
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    
 }
 
-contract MusicCoin is IERC20 {
+contract MusicCoin is TokenPool {
     string public constant name = "MusicCoin";
     string public constant symbol = "MUC";
     uint8 public constant decimals = 2;
 
     mapping(address => uint256) balances;
 
-    mapping(address => mapping(address => uint256)) allowed;
-
-    uint256 totalSupply_ = 100000000 ether;
+    uint256 _totalSupply = 100 ether;
 
     using SafeMath for uint256;
 
     constructor() {
-        balances[msg.sender] = totalSupply_;
+        balances[msg.sender] = _totalSupply;
     }
 
     function totalSupply() public view override returns (uint256) {
-        return totalSupply_;
+        return _totalSupply;
     }
 
     function balanceOf(address tokenOwner)
@@ -60,47 +43,13 @@ contract MusicCoin is IERC20 {
         return balances[tokenOwner];
     }
 
-    function transfer(address receiver, uint256 numTokens)
-        public
-        override
-        returns (bool)
-    {
-        require(numTokens <= balances[msg.sender]);
-        balances[msg.sender] = balances[msg.sender].sub(numTokens);
-        balances[receiver] = balances[receiver].add(numTokens);
-        emit Transfer(msg.sender, receiver, numTokens);
-        return true;
-    }
-
-    function approve(address delegate, uint256 numTokens)
-        public
-        override
-        returns (bool)
-    {
-        allowed[msg.sender][delegate] = numTokens;
-        emit Approval(msg.sender, delegate, numTokens);
-        return true;
-    }
-
-    function allowance(address owner, address delegate)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        return allowed[owner][delegate];
-    }
-
     function transferFrom(
         address owner,
         address buyer,
         uint256 numTokens
     ) public override returns (bool) {
-        require(numTokens <= balances[owner]);
-        require(numTokens <= allowed[owner][msg.sender]);
-
+        require(numTokens <= balances[owner], "The owner has no enough balance!");
         balances[owner] = balances[owner].sub(numTokens);
-        allowed[owner][msg.sender] = allowed[owner][msg.sender].sub(numTokens);
         balances[buyer] = balances[buyer].add(numTokens);
         emit Transfer(owner, buyer, numTokens);
         return true;
@@ -124,11 +73,35 @@ contract DEX {
     event Bought(uint256 amount);
     event Sold(uint256 amount);
 
-    IERC20 public token;
-    uint256 public exchange_rate = 1000;
+    TokenPool public token;
+    uint256 public exchange_rate = 10**14;
 
     constructor() {
         token = new MusicCoin();
+    }
+
+    function getTokenSupply() public view returns (uint256) {
+        return token.totalSupply();
+    }
+
+    function getContractAddress() public view returns (address) {
+        return address(this);
+    }
+
+    function getPoolTokenBalance() public view returns (uint256) {
+        return token.balanceOf(address(this));
+    }
+
+    function getPoolEtherBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function register() public returns (bool) {
+        uint amount = 10000;
+        uint256 dexBalance = token.balanceOf(address(this));
+        require(amount <= dexBalance, "Not enough tokens in the reserve");
+        token.transferFrom(address(this), msg.sender, amount);
+        return true;
     }
 
     function buy() public payable {
@@ -136,29 +109,28 @@ contract DEX {
         uint256 dexBalance = token.balanceOf(address(this));
         require(amountTobuy > 0, "You need to send some Ether");
         require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
-        token.transfer(msg.sender, amountTobuy * exchange_rate);
+        token.transferFrom(address(this), msg.sender, amountTobuy / exchange_rate);
         emit Bought(amountTobuy);
     }
 
     function sell(uint256 amount) public {
         require(amount > 0, "You need to sell at least some tokens");
-        uint256 allowance = token.allowance(msg.sender, address(this));
-        require(allowance >= amount, "Check the token allowance");
         token.transferFrom(msg.sender, address(this), amount);
-        payable(msg.sender).transfer(amount / exchange_rate);
+
+        // Send seller the sell price
+        uint256 weiAmount = amount * exchange_rate;
+
+        (bool success, ) = msg.sender.call{value: weiAmount}("");
+        // payable(msg.sender).transfer(weiAmount);
+        require(success, "Transfer Ether failed.");
         emit Sold(amount);
     }
 
     function transferToken(
-        address sender,
         address receiver,
         uint256 amount
     ) public {
-        require(amount > 0, "You need to sell at least some tokens");
-        require(
-            token.balanceOf(sender) > amount,
-            "You have to enough balance!"
-        );
-        token.transferFrom(sender, receiver, amount);
+        require(amount > 0, "You need to enter at least some tokens");
+        token.transferFrom(msg.sender, receiver, amount);
     }
 }

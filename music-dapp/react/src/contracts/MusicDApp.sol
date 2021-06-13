@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 // import "../../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import "./MusicCoin.sol";
-import "./MyERC20.sol";
+import "./MusicToken.sol";
 
 contract MusicDApp is DEX {
     // Music metadata
@@ -43,10 +43,6 @@ contract MusicDApp is DEX {
     // artist as primary key
     mapping(string => Music[]) internal artist_music_list;
 
-    // events firing
-    // event OnMusicUpload(string ipfsHash);
-    // event OnMusicDownload(...)
-
     // Modifiers
 
     // Public methods
@@ -68,12 +64,14 @@ contract MusicDApp is DEX {
         return token.balanceOf(msg.sender);
     }
 
-    function register() public returns (User memory) {
+    function registerUser() public returns (User memory) {
         if (!userExists()) {
             // Give 100 token for new user
             uint256 dexBalance = token.balanceOf(address(this));
             require(10000 <= dexBalance, "Not enough tokens in the reserve");
-            token.transfer(msg.sender, 10000);
+            bool success = register();
+            require(success, "Register Process failed.");
+            // token.transfer(msg.sender, 10000);
             users[msg.sender].isValid = true;
             User memory user = users[msg.sender];
             return user;
@@ -246,7 +244,7 @@ contract MusicDApp is DEX {
                 break;
             }
 
-            transferToken(sender, uploader, chain[count]);
+            // transferToken(sender, uploader, chain[count]);
             // hit the end of the chain
             if (
                 keccak256(abi.encodePacked((_music.coverFrom))) ==
@@ -285,9 +283,9 @@ contract MusicDApp is DEX {
             if (count >= 7) {
                 break;
             }
-            if (!(sender==uploader)) {
-                transferToken(sender, uploader, chain[count]);
-            }
+            // if (!(sender==uploader)) {
+            //     transferToken(sender, uploader, chain[count]);
+            // }
             // hit the end of the chain
             if (
                 keccak256(abi.encodePacked((_music.coverFrom))) ==

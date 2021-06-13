@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { downloadAudioIPFS } from './ipfs/download';
+import Web3 from 'web3';
 
 import {
   makeStyles,
@@ -113,55 +114,117 @@ const TestingPage = (props) => {
   };
 
   const testGetUserInfo = async () => {
-    const result = await contract.methods.getUserInfo().call({ from: accounts[0] });
+    const result = await contract.methods
+      .getUserInfo()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
-  const testRegister = async () => {
+  const testRegisterUser = async () => {
     const result = await contract.methods
-      .register()
+      .registerUser()
       .send({ from: accounts[0] });
     console.log(result);
   };
 
   const testUserExists = async () => {
-    const result = await contract.methods.userExists().call({ from: accounts[0] });
+    const result = await contract.methods
+      .userExists()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testUserBalance = async () => {
-    const result = await contract.methods.getUserBalance().call({ from: accounts[0] });
+    const result = await contract.methods
+      .getUserBalance()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetMusicByHash = async () => {
-    const result = await contract.methods.getMusicByHash(searchHash).call({ from: accounts[0] });
+    const result = await contract.methods
+      .getMusicByHash(searchHash)
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetUploadMusicList = async () => {
-    const result = await contract.methods.getUploadMusicList().call({ from: accounts[0] });
+    const result = await contract.methods
+      .getUploadMusicList()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testGetBoughtMusicList = async () => {
-    const result = await contract.methods.getBoughtMusicList().call({ from: accounts[0] });
+    const result = await contract.methods
+      .getBoughtMusicList()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testFindUploadMusic = async () => {
-    const result = await contract.methods.findUploadMusic(searchHash).call({ from: accounts[0] });
+    const result = await contract.methods
+      .findUploadMusic(searchHash)
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
   const testMsgSender = async () => {
-    const result = await contract.methods.returnMsgSender().call({ from: accounts[0] });
+    const result = await contract.methods
+      .returnMsgSender()
+      .call({ from: accounts[0] });
     console.log(result);
   };
 
-  // const testUserLogin = async () => {
-  //   const result = await contract.methods.
-  // }
+  const testBuyToken = async () => {
+    const result = await contract.methods
+      .buy()
+      .send({ from: accounts[0], value: web3.utils.toWei('0.01', 'ether') });
+    console.log(result);
+  };
+
+  const testSellToken = async () => {
+    const result = await contract.methods
+      .sell(100)
+      .send({ from: accounts[0]});
+    console.log(result);
+  };
+  
+  const testTransferToken = async () => {
+    const receiver = "0x42162CE07c846a14026b0535BC9c5f4E59856479";
+    const result = await contract.methods
+      .transferToken(receiver, 100)
+      .send({ from: accounts[0]});
+    console.log(result);
+  }
+
+  const testInstance = () => {
+    console.log(web3);
+    console.log(contract);
+    console.log(accounts);
+  }
+
+  const testGetPoolTokenBalance = async () => {
+    const result = await contract.methods
+      .getPoolTokenBalance()
+      .call({ from: accounts[0] });
+    console.log(result);
+  };
+
+  const testGetPoolEtherBalance = async () => {
+    const result = await contract.methods
+      .getPoolEtherBalance()
+      .call({ from: accounts[0] });
+    console.log(result);
+  };
+
+  const testGetContractAddress = async () => {
+    const result = await contract.methods
+      .getContractAddress()
+      .call({ from: accounts[0] });
+    console.log(result);
+  };
+
 
   return (
     <Container maxWidth='lg' className={classes.container}>
@@ -257,24 +320,6 @@ const TestingPage = (props) => {
                 <Button
                   variant='contained'
                   onClick={() => {
-                    testUserExists();
-                  }}
-                >
-                  Test User Exists
-                </Button>
-
-                <Button
-                  variant='contained'
-                  onClick={() => {
-                    testGetUserInfo();
-                  }}
-                >
-                  Test Get User Info
-                </Button>
-
-                <Button
-                  variant='contained'
-                  onClick={() => {
                     testGetUploadMusicList();
                   }}
                 >
@@ -302,10 +347,28 @@ const TestingPage = (props) => {
                 <Button
                   variant='contained'
                   onClick={() => {
-                    testRegister();
+                    testUserExists();
                   }}
                 >
-                  Test Register
+                  Test User Exists
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetUserInfo();
+                  }}
+                >
+                  Test Get User Info
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testRegisterUser();
+                  }}
+                >
+                  Test Register User
                 </Button>
 
                 <Button
@@ -325,6 +388,70 @@ const TestingPage = (props) => {
                 >
                   Test Get Music By Hash
                 </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testBuyToken();
+                  }}
+                >
+                  Test Buy token
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testSellToken();
+                  }}
+                >
+                  Test Sell token
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testTransferToken();
+                  }}
+                >
+                  Test Transfer Token
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetPoolTokenBalance();
+                  }}
+                >
+                  Test Get Pool Token Balance
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetPoolEtherBalance();
+                  }}
+                >
+                  Test Get Pool Ether Balance
+                </Button>
+                
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testInstance();
+                  }}
+                >
+                  Test Instance
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testGetContractAddress();
+                  }}
+                >
+                  Test Get Contract Address
+                </Button>
+
               </div>
             </form>
 
