@@ -209,6 +209,10 @@ const UploadPage = (props) => {
         if (msg_obj.status === 'saved_query_hpcp') {
           source.close();
           setUploadPending(false);
+          // if (msg_obj.payload.length > 0) {
+          //   console.log("coverfrom" + msg_obj.payload[0])
+          //   uploadMusicBlockchain(retHash, msg_obj.payload[0]);
+          // } 
           if (msg_obj.payload.length > 0) {
             console.log("coverfrom" + msg_obj.payload[0])
             uploadMusicBlockchain(retHash, msg_obj.payload[0]);

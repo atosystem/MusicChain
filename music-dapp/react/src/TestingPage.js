@@ -89,6 +89,8 @@ const TestingPage = (props) => {
   const [searchMusic, setSearchMusic] = useState('');
   const [searchArtist, setSearchArtist] = useState('');
   const [searchHash, setSearchHash] = useState('');
+  const [searchCoverFrom, setSearchCoverFrom] = useState('');
+  const [transToken, setTransToken] = useState('');
 
   const testGetMusic = async () => {
     const result = await contract.methods
@@ -225,6 +227,53 @@ const TestingPage = (props) => {
     console.log(result);
   };
 
+  const testSetMusicCoverFrom = async () => {
+    const result = await contract.methods
+      .setMusicCoverFrom(searchHash, searchCoverFrom)
+      .send({ from: accounts[0]});
+      console.log(result);
+  }
+
+  const testPopulateMusic1 = async () => {
+    const hash1 = "QmTs711cqrjHLfRifJ3sVq9uCfYcmBTXQYgQtQGETLqbFy";
+    const name = "夜に駆ける";
+    const artist1 = "YOASOBI";
+    const coverFrom1 = "None";
+
+    const music1 = await contract.methods
+        .uploadMusic(hash1, name, artist1, coverFrom1)
+        .send({ from: accounts[0] });
+
+  }
+
+  const testPopulateMusic2 = async () => {
+    const hash2 = "QmZd8UPdjJyFqWn3EuWDQkaauoEg49zZaB9Rceg2MzyFXQ";
+    const name = "夜に駆ける";
+    const artist2 = "N.Flying";
+    const coverFrom2 = "QmTs711cqrjHLfRifJ3sVq9uCfYcmBTXQYgQtQGETLqbFy";
+
+    const music2 = await contract.methods
+        .uploadMusic(hash2, name, artist2, coverFrom2)
+        .send({ from: accounts[0] });
+  }
+
+  const testPopulateMusic3 = async () => {
+    const hash3 = "QmXv286YdYGpgbwFyHCnLrerJbUPTUm5PSgZLQwCftEpf8";
+    const name = "夜に駆ける";
+    const artist3 = "百鬼あやめホロ";
+    const coverFrom3 = "QmZd8UPdjJyFqWn3EuWDQkaauoEg49zZaB9Rceg2MzyFXQ";
+
+    const music3 = await contract.methods
+        .uploadMusic(hash3, name, artist3, coverFrom3)
+        .send({ from: accounts[0] });
+  }
+
+  const testBuyMusicByHash = async () => {
+    const result = await contract.methods
+        .buyMusicByHash(searchHash)
+        .send({ from: accounts[0] });
+  }
+
 
   return (
     <Container maxWidth='lg' className={classes.container}>
@@ -278,9 +327,65 @@ const TestingPage = (props) => {
                     setSearchHash(event.target.value);
                   }}
                 />
+                <TextField
+                  id='music-hash-textfield'
+                  label='CoverFrom'
+                  placeholder="Type song's Cover From..."
+                  multiline
+                  variant='outlined'
+                  size='small'
+                  value={searchCoverFrom}
+                  onChange={(event) => {
+                    setSearchCoverFrom(event.target.value);
+                  }}
+                />
+                <TextField
+                  id='music-hash-textfield'
+                  label='Token'
+                  placeholder="Type token value..."
+                  multiline
+                  variant='outlined'
+                  size='small'
+                  value={transToken}
+                  onChange={(event) => {
+                    setTransToken(event.target.value);
+                  }}
+                />
               </div>
 
               <div className={classes.testingButtons}>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testPopulateMusic1();
+                  }}
+                >
+                  Test testPopulateMusic 1
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testPopulateMusic2();
+                  }}
+                >
+                  Test testPopulateMusic 2
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testPopulateMusic3();
+                  }}
+                >
+                  Test testPopulateMusic 3
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testBuyMusicByHash();
+                  }}
+                >
+                  Test Buy Music By Hash
+                </Button>
                 <Button
                   variant='contained'
                   onClick={() => {
@@ -297,6 +402,15 @@ const TestingPage = (props) => {
                   }}
                 >
                   Test Get Music List
+                </Button>
+
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    testSetMusicCoverFrom();
+                  }}
+                >
+                  Test Set Cover From
                 </Button>
 
                 <Button
@@ -352,6 +466,8 @@ const TestingPage = (props) => {
                 >
                   Test User Exists
                 </Button>
+
+                
 
                 <Button
                   variant='contained'

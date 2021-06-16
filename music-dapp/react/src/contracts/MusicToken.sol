@@ -133,4 +133,13 @@ contract DEX {
         require(amount > 0, "You need to enter at least some tokens");
         token.transferFrom(msg.sender, receiver, amount);
     }
+
+    function transferTokenFrom(
+        address sender,
+        address receiver,
+        uint256 amount
+    ) internal {
+        require(amount > 0, "You need to enter at least some tokens");
+        token.transferFrom(sender, receiver, amount);
+    }
 }

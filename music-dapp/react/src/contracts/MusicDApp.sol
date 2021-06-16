@@ -66,7 +66,7 @@ contract MusicDApp is DEX {
 
     function registerUser() public returns (User memory) {
         if (!userExists()) {
-            // Give 100 token for new user
+            // Give 10000 token for new user
             uint256 dexBalance = token.balanceOf(address(this));
             require(10000 <= dexBalance, "Not enough tokens in the reserve");
             bool success = register();
@@ -244,7 +244,7 @@ contract MusicDApp is DEX {
                 break;
             }
 
-            // transferToken(sender, uploader, chain[count]);
+            transferTokenFrom(sender, uploader, chain[count]);
             // hit the end of the chain
             if (
                 keccak256(abi.encodePacked((_music.coverFrom))) ==
@@ -264,6 +264,11 @@ contract MusicDApp is DEX {
         users[msg.sender].bought_music_list.push(songHash);
     }
 
+    // Just for testing purpose
+    function setMusicCoverFrom(string memory _ipfsHash, string memory _coverFrom) public {
+        music_hash[_ipfsHash].coverFrom = _coverFrom;
+    }
+
     function buyMusicByHash(string memory _ipfsHash) public {
         address sender = msg.sender;
         Music memory _music = music_hash[_ipfsHash];
@@ -272,10 +277,10 @@ contract MusicDApp is DEX {
         uint8[7] memory chain = [100, 50, 25, 12, 6, 3, 1];
         uint256 count = 0;
 
-        // TODO: Uploader can listen to what he uploaded
+        // Uploader can listen to what he uploaded
         if (findUploadMusic(songHash)) return;
 
-        // TODO: Buyer will not pay twice
+        // Buyer will not pay twice
         if (findBoughtMusic(songHash)) return;
 
         while (true) {
@@ -283,9 +288,14 @@ contract MusicDApp is DEX {
             if (count >= 7) {
                 break;
             }
-            // if (!(sender==uploader)) {
-            //     transferToken(sender, uploader, chain[count]);
-            // }
+
+            // Send token only if the 
+            if (
+                !(keccak256(abi.encodePacked(sender)) ==
+                keccak256(abi.encodePacked(uploader)))
+            ) {
+                transferTokenFrom(sender, uploader, chain[count]);
+            }
             // hit the end of the chain
             if (
                 keccak256(abi.encodePacked((_music.coverFrom))) ==
