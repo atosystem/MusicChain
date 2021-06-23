@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import {
   makeStyles,
   Container,
+  Typography,
   Box,
   Grid,
   Paper,
@@ -47,16 +48,36 @@ const DashboardPage = (props) => {
   return (
     <Container maxWidth='lg' className={classes.container}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8} lg={6}>
-          <Paper className={fixedHeightPaper}></Paper>
-        </Grid>
-
-        <Grid item xs={12} md={4} lg={6}>
-          <Paper className={fixedHeightPaper}></Paper>
-        </Grid>
-
         <Grid item xs={12}>
-          <Paper className={classes.paper}></Paper>
+          <Paper className={classes.paper}>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+              style={{ color: 'white', fontSize: 32 }}
+            >
+              Use Guide
+            </Typography>
+
+            <h2>Quick Start</h2>
+
+            <h2>Account</h2>
+
+            <h2>Search</h2>
+
+            <h2>Upload</h2>
+
+            <h2>Testing</h2>
+
+            <h2>Links</h2>
+
+            <ul>
+              <li>Coffee</li>
+              <li>Tea</li>
+              <li>Milk</li>
+            </ul>
+
+          </Paper>
         </Grid>
       </Grid>
       <Box pt={4}></Box>

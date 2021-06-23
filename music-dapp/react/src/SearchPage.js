@@ -93,6 +93,51 @@ const SearchPage = (props) => {
   const [searchRows, setSearchRows] = useState([])
   const [isSearchPending, setSearchPending] = useState(false)
 
+  const getArtistMusicList = async () => {
+
+  }
+
+  const getMusicArtistList = async () => {
+
+  }
+
+  const getMusic = async () => {
+
+  }
+
+  const getRelevantMusic = async () => {
+
+  }
+
+  const searchMusicHandler = async () => {
+    setSearchPending(true);
+    let result;
+
+    const exactSearch = searchMusic !== "" && searchArtist !== "";
+    const artistSearch = searchMusic !== "";
+    const musicSearch = searchArtist !== "";
+
+    // For different condition, fetch different data from the blockchain
+    if (exactSearch) {
+      result = await getMusic();
+    } else if (artistSearch) {
+      result = await getMusicArtistList();
+    } else if (musicSearch) {
+      result = await getArtistMusicList();
+    } else {
+      alert("You have to input music or artist name!")
+      setSearchPending(false)
+      return;
+    }
+
+    // TODO:
+    // Try to fill the result to 10
+
+    setSearchRows(result)
+    setSearchPending(false)
+    console.log(result);
+  }
+
   const handle_searchMusic = async () => {
     setSearchPending(true);
     let result;
@@ -105,15 +150,10 @@ const SearchPage = (props) => {
         .getMusicArtistList(searchMusic)
         .call({ from: accounts[0] });
     }
-    // const result = await contract.methods
-    //   .searchMusic(searchMusic, searchArtist)
-    //   .call({ from: accounts[0] });
     setSearchRows(result)
     setSearchPending(false)
     console.log(result);
 
-    // console.log(result.ipfsHash);
-    // setSongHash(result.ipfsHash);
   };
 
   

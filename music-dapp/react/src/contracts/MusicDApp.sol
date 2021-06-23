@@ -27,7 +27,7 @@ contract MusicDApp is DEX {
     }
 
     // State variables
-    Music[] musics;
+    Music[] internal musics;
 
     mapping(address => User) internal users;
 
@@ -48,10 +48,6 @@ contract MusicDApp is DEX {
     // Public methods
 
     // Retrieve basic user information
-    function returnMsgSender() public view returns (address) {
-        return msg.sender;
-    }
-
     function userExists() public view returns (bool) {
         return users[msg.sender].isValid;
     }
@@ -88,6 +84,7 @@ contract MusicDApp is DEX {
         return users[msg.sender].bought_music_list;
     }
 
+    // check if the user had upload this music
     function findUploadMusic(string memory _ipfsHash)
         public
         view
@@ -108,6 +105,7 @@ contract MusicDApp is DEX {
         return false;
     }
 
+    // check if the user had bought this music
     function findBoughtMusic(string memory _ipfsHash)
         public
         view
@@ -128,6 +126,7 @@ contract MusicDApp is DEX {
         return false;
     }
 
+    // upload music to the blockchain
     function uploadMusic(
         string memory _ipfsHash,
         string memory _name,
@@ -193,16 +192,6 @@ contract MusicDApp is DEX {
         return _music;
     }
 
-    function getMusicWithCountIncrement(
-        string memory _name,
-        string memory _artist
-    ) public returns (Music memory) {
-        music[_name][_artist].count += 1;
-        Music memory _music = music[_name][_artist];
-
-        return _music;
-    }
-
     function getMusicArtistList(string memory _name)
         public
         view
@@ -221,53 +210,7 @@ contract MusicDApp is DEX {
         Music[] memory _artist_music_list = artist_music_list[_artist];
 
         return _artist_music_list;
-    }
-
-    function buyMusic(string memory _name, string memory _artist) public {
-        address sender = msg.sender;
-        Music memory _music = music[_name][_artist];
-        string memory songHash = _music.ipfsHash;
-        address uploader = _music.uploader;
-        uint8[7] memory chain = [100, 50, 25, 12, 6, 3, 1];
-        uint256 count = 0;
-
-        // TODO: Uploader can listen to what he uploaded
-        if (findUploadMusic(songHash)) return;
-
-        // TODO: Buyer will not pay twice
-        if (findBoughtMusic(songHash)) return;
-        // transfer token to uploader at the beginning of the chain
-
-        while (true) {
-            // The depth excee the limit
-            if (count >= 7) {
-                break;
-            }
-
-            transferTokenFrom(sender, uploader, chain[count]);
-            // hit the end of the chain
-            if (
-                keccak256(abi.encodePacked((_music.coverFrom))) ==
-                keccak256(abi.encodePacked(("None")))
-            ) {
-                break;
-            }
-
-            sender = uploader;
-            _music = music_hash[_music.coverFrom];
-            uploader = _music.uploader;
-
-            count++;
-        }
-
-        // add music to listener list
-        users[msg.sender].bought_music_list.push(songHash);
-    }
-
-    // Just for testing purpose
-    function setMusicCoverFrom(string memory _ipfsHash, string memory _coverFrom) public {
-        music_hash[_ipfsHash].coverFrom = _coverFrom;
-    }
+    }       
 
     function buyMusicByHash(string memory _ipfsHash) public {
         address sender = msg.sender;
@@ -378,6 +321,37 @@ contract MusicDApp is DEX {
 
         return music_chain;
     }
+
+    function getRelevantMusicNameList(string memory _name, uint _index) 
+        public 
+        view 
+        returns (Music[10] memory, uint, bool) 
+    {
+        Music[10] memory returnList;
+        uint returnIndex = 0;
+        bool reachEnd = false;
+        Music memory _music;
+        
+        for(uint i = _index; i < musics.length; i++) {
+            if(returnIndex >= 10) break;
+            _music = musics[i];
+
+            // if a music name contains input name, put it into return list 
+            if(str_contains(_name, _music.name)) {
+                returnList[returnIndex] = _music;
+                returnIndex++;
+            }
+        }
+
+        // tell frontend we had reach the end of the list
+        if (returnIndex == musics.length) {
+            reachEnd = true;
+        }
+
+        return (returnList, returnIndex, reachEnd);
+    }
+
+    
 
     // Private methods
     // check if string contains in other string
