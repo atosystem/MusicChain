@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from "react";
+import clsx from "clsx";
 
 import {
   makeStyles,
@@ -8,7 +8,7 @@ import {
   Grid,
   Paper,
   Button,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -16,14 +16,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
     paddingBottom: theme.spacing(5),
-    backgroundColor: '#202020',
+    backgroundColor: "#202020",
   },
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    backgroundColor: '#808080',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+    backgroundColor: "#808080",
   },
   fixedHeight: {
     height: 240,
@@ -41,11 +41,11 @@ const DashboardPage = (props) => {
   const setPage = props.setPage;
 
   useEffect(() => {
-    setPage('DashBoard');
+    setPage("DashBoard");
   }, []);
 
   return (
-    <Container maxWidth='lg' className={classes.container}>
+    <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={8} lg={6}>
           <Paper className={fixedHeightPaper}></Paper>

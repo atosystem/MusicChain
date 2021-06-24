@@ -18,6 +18,7 @@
     "ipfs-http-client": "^50.1.0",
     "material-ui-dropzone": "^3.5.0",
     "moment": "^2.29.1",
+    "prettier": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
@@ -30,7 +31,8 @@
     "setup": "cd src && bash reset.sh",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write src/**/*.js src/*.js"
   },
   "eslintConfig": {
     "extends": [
