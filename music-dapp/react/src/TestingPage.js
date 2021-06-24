@@ -91,6 +91,7 @@ const TestingPage = (props) => {
   const [searchHash, setSearchHash] = useState('');
   const [searchCoverFrom, setSearchCoverFrom] = useState('');
   const [transToken, setTransToken] = useState('');
+  const [batchUploadJsonFile, setBatchUploadJsonFile] = useState([]);
 
   const testGetMusic = async () => {
     const result = await contract.methods
@@ -128,6 +129,46 @@ const TestingPage = (props) => {
       .send({ from: accounts[0] });
     console.log(result);
   };
+
+  const batch_upload = async () => {
+    // const result = await contract.methods
+    //   .uploadMusic()
+    //   .send({ from: accounts[0] });
+    // console.log(result);
+    const bujf = batchUploadJsonFile;
+    console.log(bujf);
+    if (bujf.length <= 0) {
+      return false;
+    }
+
+    const fr = new FileReader();
+
+    fr.onload = function (e) {
+      console.log(e);
+      let result = JSON.parse(e.target.result);
+      let formatted = JSON.stringify(result, null, 2);
+      // console.log(result)
+      // console.log(formatted)
+
+      result.forEach(async (x) => {
+        console.log(x)
+        try {
+          const music = await contract.methods
+            .uploadMusic_batch(x["ipfs_hash"], x["title"], x["artist"], x["coverFrom"], x["uploader"])
+            .send({ from: accounts[0] });
+          console.log(music);
+        } catch (error) {
+          console.log(error);
+        }
+      })
+
+    }
+
+    fr.readAsText(bujf.item(0));
+  };
+
+
+
 
   const testUserExists = async () => {
     const result = await contract.methods
@@ -188,15 +229,15 @@ const TestingPage = (props) => {
   const testSellToken = async () => {
     const result = await contract.methods
       .sell(100)
-      .send({ from: accounts[0]});
+      .send({ from: accounts[0] });
     console.log(result);
   };
-  
+
   const testTransferToken = async () => {
     const receiver = "0x42162CE07c846a14026b0535BC9c5f4E59856479";
     const result = await contract.methods
       .transferToken(receiver, 100)
-      .send({ from: accounts[0]});
+      .send({ from: accounts[0] });
     console.log(result);
   }
 
@@ -230,8 +271,8 @@ const TestingPage = (props) => {
   const testSetMusicCoverFrom = async () => {
     const result = await contract.methods
       .setMusicCoverFrom(searchHash, searchCoverFrom)
-      .send({ from: accounts[0]});
-      console.log(result);
+      .send({ from: accounts[0] });
+    console.log(result);
   }
 
   const testPopulateMusic1 = async () => {
@@ -241,8 +282,8 @@ const TestingPage = (props) => {
     const coverFrom1 = "None";
 
     const music1 = await contract.methods
-        .uploadMusic(hash1, name, artist1, coverFrom1)
-        .send({ from: accounts[0] });
+      .uploadMusic(hash1, name, artist1, coverFrom1)
+      .send({ from: accounts[0] });
 
   }
 
@@ -253,8 +294,8 @@ const TestingPage = (props) => {
     const coverFrom2 = "QmTs711cqrjHLfRifJ3sVq9uCfYcmBTXQYgQtQGETLqbFy";
 
     const music2 = await contract.methods
-        .uploadMusic(hash2, name, artist2, coverFrom2)
-        .send({ from: accounts[0] });
+      .uploadMusic(hash2, name, artist2, coverFrom2)
+      .send({ from: accounts[0] });
   }
 
   const testPopulateMusic3 = async () => {
@@ -264,14 +305,14 @@ const TestingPage = (props) => {
     const coverFrom3 = "QmZd8UPdjJyFqWn3EuWDQkaauoEg49zZaB9Rceg2MzyFXQ";
 
     const music3 = await contract.methods
-        .uploadMusic(hash3, name, artist3, coverFrom3)
-        .send({ from: accounts[0] });
+      .uploadMusic(hash3, name, artist3, coverFrom3)
+      .send({ from: accounts[0] });
   }
 
   const testBuyMusicByHash = async () => {
     const result = await contract.methods
-        .buyMusicByHash(searchHash)
-        .send({ from: accounts[0] });
+      .buyMusicByHash(searchHash)
+      .send({ from: accounts[0] });
   }
 
 
@@ -354,6 +395,22 @@ const TestingPage = (props) => {
               </div>
 
               <div className={classes.testingButtons}>
+                <input
+                  accept='*/*'
+                  id='contained-button-file'
+                  type='file'
+                  onChange={(event) => {
+                    setBatchUploadJsonFile(event.target.files);
+                  }}
+                />
+                < Button
+                  variant='contained'
+                  onClick={() => {
+                    batch_upload();
+                  }}
+                >
+                  Batch Upload
+                </Button>
                 <Button
                   variant='contained'
                   onClick={() => {
@@ -467,7 +524,7 @@ const TestingPage = (props) => {
                   Test User Exists
                 </Button>
 
-                
+
 
                 <Button
                   variant='contained'
@@ -549,7 +606,7 @@ const TestingPage = (props) => {
                 >
                   Test Get Pool Ether Balance
                 </Button>
-                
+
                 <Button
                   variant='contained'
                   onClick={() => {

@@ -7,8 +7,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { downloadAudioIPFS } from './ipfs/download';
 import MusicDAppContract from './build/contracts/MusicDApp.json';
-import MusicCoinContract from './build/contracts/MusicCoin.json';
-import ERC20Contract from './build/contracts/IERC20.json';
+// import MusicCoinContract from './build/contracts/MusicCoin.json';
+// import ERC20Contract from './build/contracts/IERC20.json';
 
 import clsx from 'clsx';
 import {

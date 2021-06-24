@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { downloadAudioIPFS } from './ipfs/download';
+import Moment from 'moment';
+import AlbumIcon from '@material-ui/icons/Album';
 
 import {
   makeStyles,
@@ -118,7 +120,7 @@ const SongDetailPage = (props) => {
 
   useEffect(async () => {
     await getMusicByHash();
-  }, [accounts, contract])
+  }, [accounts, contract, queryhash])
 
 
 
@@ -165,17 +167,63 @@ const SongDetailPage = (props) => {
 
   return (
     <Container maxWidth='lg' className={classes.container}>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={8} lg={12}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8} lg={8}>
           <Paper className={fixedHeightPaper}>
-            <Typography
-              component='h2'
-              variant='h6'
-              gutterBottom
-              style={{ color: 'white', fontSize: 20 }}
-            >
-              Details
-            </Typography>
+            <div>
+              <Typography
+                component='h2'
+                variant='h1'
+                gutterBottom
+                style={{ color: 'white', fontSize: 40 }}
+              >
+                {songData["name"]}
+              </Typography>
+            </div>
+            <div>
+
+              <Typography
+                component='h2'
+                variant='h6'
+                gutterBottom
+                style={{ color: 'white', fontSize: 20 }}
+              >
+                Artist : {songData["artist"]}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component='h2'
+                variant='h6'
+                gutterBottom
+                style={{ color: 'white', fontSize: 20 }}
+              >
+                Upload Time : {Moment.unix(songData["uploadTime"]).zone(8).format("MM/D/YYYY, hh:mm:ss")}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component='h2'
+                variant='h6'
+                gutterBottom
+                style={{ color: 'white', fontSize: 20 }}
+              >
+                Ipfs Hash : {songData["ipfsHash"]}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component='h2'
+                variant='h6'
+                gutterBottom
+                style={{ color: 'white', fontSize: 20 }}
+              >
+                Uploader : {songData["uploader"]}
+              </Typography>
+            </div>
+
+
+
             <Typography
               component='h2'
               variant='h6'
@@ -183,10 +231,10 @@ const SongDetailPage = (props) => {
               style={{ color: 'white', fontSize: 15 }}
             >
               {/* need to beautify UI */}
-              {songData.hasOwnProperty('coverFrom') && Object.keys(songData).map((k) => {
+              {/* {songData.hasOwnProperty('coverFrom') && Object.keys(songData).map((k) => {
                 return <div key={k} > {k} : {songData[k]}</div>
               })
-              }
+              } */}
             </Typography>
 
             <form className={classes.inputForm} noValidate autoComplete='off'>
@@ -246,7 +294,19 @@ const SongDetailPage = (props) => {
                 </Button>
               </div>
             </form>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+          <Paper className={fixedHeightPaper}>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+              style={{ color: 'white', fontSize: 20 }}
+            >
               Copyright Chain
+            </Typography>
+
             <Timeline align="right">
               {copyrightChain.length && copyrightChain.map((ent, index) => {
                 return (

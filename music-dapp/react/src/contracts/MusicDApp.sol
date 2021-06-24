@@ -156,6 +156,35 @@ contract MusicDApp is DEX {
         users[msg.sender].upload_music_list.push(_ipfsHash);
     }
 
+    function uploadMusic_batch(
+        string memory _ipfsHash,
+        string memory _name,
+        string memory _artist,
+        string memory _coverFrom,
+        address uploader_addr
+    ) public {
+        Music memory _music =
+            Music(
+                uploader_addr,
+                block.timestamp,
+                0,
+                _name,
+                _artist,
+                _ipfsHash,
+                _coverFrom
+            );
+
+        // Global state update
+        musics.push(_music);
+        music[_name][_artist] = _music;
+        music_hash[_ipfsHash] = _music;
+        music_artist_list[_name].push(_music);
+        artist_music_list[_artist].push(_music);
+
+        // User state update
+        users[uploader_addr].upload_music_list.push(_ipfsHash);
+    }
+
     function getMusic(string memory _name, string memory _artist)
         public
         view
