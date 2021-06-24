@@ -126,6 +126,17 @@ contract MusicDApp is DEX {
         return false;
     }
 
+    function musicExists(string memory _name, string memory _artist) 
+        public 
+        view
+        returns (bool)
+    {
+        Music memory _music = music[_name][_artist];
+        address _uploader = _music.uploader;
+        bool exists = _uploader != address(0);
+        return exists;
+    }
+
     // upload music to the blockchain
     function uploadMusic(
         string memory _ipfsHash,
@@ -137,7 +148,7 @@ contract MusicDApp is DEX {
             Music(
                 msg.sender,
                 block.timestamp,
-                0,
+                1,
                 _name,
                 _artist,
                 _ipfsHash,
@@ -351,7 +362,7 @@ contract MusicDApp is DEX {
         return music_chain;
     }
 
-    function getRelevantMusicNameList(string memory _name, uint _index) 
+    function getRelevantMusicNameList(string memory _name, uint _index, uint depth) 
         public 
         view 
         returns (Music[10] memory, uint, bool) 
@@ -360,9 +371,10 @@ contract MusicDApp is DEX {
         uint returnIndex = 0;
         bool reachEnd = false;
         Music memory _music;
+        uint index = _index;
         
         for(uint i = _index; i < musics.length; i++) {
-            if(returnIndex >= 10) break;
+            if(returnIndex >= depth) break;
             _music = musics[i];
 
             // if a music name contains input name, put it into return list 
@@ -370,10 +382,76 @@ contract MusicDApp is DEX {
                 returnList[returnIndex] = _music;
                 returnIndex++;
             }
+
+            index++;
         }
 
         // tell frontend we had reach the end of the list
-        if (returnIndex == musics.length) {
+        if (index == musics.length) {
+            reachEnd = true;
+        }
+
+        return (returnList, returnIndex, reachEnd);
+    }
+
+    function getRelevantArtistNameList(string memory _artist, uint _index, uint depth) 
+        public 
+        view 
+        returns (Music[10] memory, uint, bool) 
+    {
+        Music[10] memory returnList;
+        uint returnIndex = 0;
+        bool reachEnd = false;
+        Music memory _music;
+        uint index = _index;
+        
+        for(uint i = _index; i < musics.length; i++) {
+            if(returnIndex >= depth) break;
+            _music = musics[i];
+
+            // if a music name contains input name, put it into return list 
+            if(str_contains(_artist, _music.artist)) {
+                returnList[returnIndex] = _music;
+                returnIndex++;
+            }
+
+            index++;
+        }
+
+        // tell frontend we had reach the end of the list
+        if (index == musics.length) {
+            reachEnd = true;
+        }
+
+        return (returnList, returnIndex, reachEnd);
+    }
+
+    function getRelevantMusicArtistList(string memory _name, string memory _artist, uint _index, uint depth) 
+        public 
+        view 
+        returns (Music[10] memory, uint, bool) 
+    {
+        Music[10] memory returnList;
+        uint returnIndex = 0;
+        bool reachEnd = false;
+        Music memory _music;
+        uint index = _index;
+        
+        for(uint i = _index; i < musics.length; i++) {
+            if(returnIndex >= depth) break;
+            _music = musics[i];
+
+            // if a music name contains input name, put it into return list 
+            if(str_contains(_name, _music.name) || str_contains(_artist, _music.artist)) {
+                returnList[returnIndex] = _music;
+                returnIndex++;
+            }
+
+            index++;
+        }
+
+        // tell frontend we had reach the end of the list
+        if (index == musics.length) {
             reachEnd = true;
         }
 

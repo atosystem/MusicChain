@@ -86,30 +86,154 @@ const SearchPage = (props) => {
   }, []);
 
   // states
-  const [songHash, setSongHash] = useState("");
-  const [searchMusic, setSearchMusic] = useState("");
-  const [searchArtist, setSearchArtist] = useState("");
-  const [searchHash, setSearchHash] = useState("");
-  const [searchRows, setSearchRows] = useState([]);
-  const [isSearchPending, setSearchPending] = useState(false);
+  const [songHash, setSongHash] = useState('');
+  const [searchHash, setSearchHash] = useState('');
+  const [searchMusic, setSearchMusic] = useState('');
+  const [searchArtist, setSearchArtist] = useState('');
+  const [exactSearchIndex, setExactSearchIndex] = useState('');
+  const [artistSearchIndex, setArtistSearchIndex] = useState('');
+  const [musicSearchIndex, setMusicSearchIndex] = useState('');
+  const [exactSearchRows, setExactSearchRows] = useState('');
+  const [artistSearchRows, setArtistSearchRows] = useState('');
+  const [musicSearchRows, setMusicSearchRows] = useState('');
+  const [searchRows, setSearchRows] = useState([])
+  const [isSearchPending, setSearchPending] = useState(false)
 
+  // Get music list
   const getArtistMusicList = async () => {
+    const result = await contract.methods
+                        .getArtistMusicList(searchArtist)
+                        .call({ from: accounts[0] });
 
+    return result;
   }
 
+  // Get artist list
   const getMusicArtistList = async () => {
+    const result = await contract.methods
+                        .getMusicArtistList(searchMusic)
+                        .call({ from: accounts[0] });
 
+    return result;
   }
 
   const getMusic = async () => {
+    const result = await contract.methods
+                        .getMusic(searchMusic, searchArtist)
+                        .call({ from: accounts[0] });
 
+    return result;
   }
 
-  const getRelevantMusic = async () => {
+  const getRelevantMusicNameList = async (index, depth) => {
+    const result = await contract.methods
+                        .getRelevantMusicNameList(searchMusic, index)
+                        .call({ from: accounts[0] });
 
+    return result;
   }
 
-  const searchMusicHandler = async () => {
+  const getRelevantArtistNameList = async (index, depth) => {
+    const result = await contract.methods
+                        .getRelevantArtistNameList(searchArtist, index, depth)
+                        .call({ from: accounts[0] });
+
+    return result;
+  }
+
+  const getRelevantMusicArtistList = async (index, depth) => {
+    const result = await contract.methods
+                        .getRelevantArtistNameList(searchMusic, searchArtist, index, depth)
+                        .call({ from: accounts[0] });
+
+    return result;
+  }
+
+  const getExactSearchList = async (index) => {
+    let result = await getMusic();
+
+    // Empty response, find relevant musics
+    if(!result) {
+      let [moreResult, returnIndex, reachEnd] = await getRelevantMusicArtistList(index, 10);
+
+      // Set search index for later use
+      if (reachEnd) {
+        setExactSearchIndex(-1);
+      } else {
+        setExactSearchIndex(returnIndex);
+      }
+
+      setExactSearchRows(moreResult);
+      return moreResult;
+    }
+
+    result = [result];
+    setExactSearchRows(result);
+
+    return result;
+  }
+
+  const getArtistSearchList = async (index) => {
+    let result = await getMusicArtistList();
+
+    if (result.length < 10) {
+      const diff = 10 - result.length;
+      let [moreResult, returnIndex, reachEnd] = await getRelevantArtistNameList(index, diff);
+
+      // Set search index for later use
+      if (reachEnd) {
+        setArtistSearchIndex(-1);
+      } else {
+        setArtistSearchIndex(returnIndex);
+      }
+
+      result = result.concat(moreResult);
+    }
+
+    setArtistSearchRows(result);
+
+    return result;
+  }
+
+  const getMusicSearchList = async (index) => {
+    let result = await getArtistMusicList();
+
+    if (result.length < 10) {
+      const diff = 10 - result.length;
+      let [moreResult, returnIndex, reachEnd] = await getRelevantMusicNameList(index, diff);
+
+      // Set search index for later use
+      if (reachEnd) {
+        setMusicSearchIndex(-1);
+      } else {
+        setMusicSearchIndex(returnIndex);
+      }
+
+      result = result.concat(moreResult);
+    }
+
+    setMusicSearchRows(result);
+
+    return result;
+  }
+
+  const clearSearchIndex = () => {
+    setExactSearchIndex(0);
+    setArtistSearchIndex(0);
+    setMusicSearchIndex(0);
+  }
+
+  const clearSearchResult = () => {
+    setExactSearchRows([]);
+    setArtistSearchRows([]);
+    setMusicSearchRows([]);
+  }
+
+
+  const getSearchList = async () => {
+    clearSearchIndex();
+    clearSearchResult();
+
     setSearchPending(true);
     let result;
 
@@ -119,19 +243,62 @@ const SearchPage = (props) => {
 
     // For different condition, fetch different data from the blockchain
     if (exactSearch) {
-      result = await getMusic();
+      result = await getExactSearchList(0);
     } else if (artistSearch) {
-      result = await getMusicArtistList();
+      result = await getArtistSearchList(0);
     } else if (musicSearch) {
-      result = await getArtistMusicList();
+      result = await getMusicSearchList(0);
     } else {
-      alert("You have to input music or artist name!")
-      setSearchPending(false)
+      alert("You have to input music or artist name!");
+      setSearchPending(false);
       return;
     }
 
-    // TODO:
-    // Try to fill the result to 10
+    setSearchRows(result)
+    setSearchPending(false)
+    console.log(result);
+  }
+
+  const getMoreSearchList = async () => {
+    setSearchPending(true);
+    let oldResult = searchRows;
+    let result;
+
+    const exactSearch = searchMusic !== "" && searchArtist !== "";
+    const artistSearch = searchMusic !== "";
+    const musicSearch = searchArtist !== "";
+
+    // TODO: check if reach END
+    // For different condition, fetch different data from the blockchain
+    if (exactSearch) {
+      if (exactSearchIndex === -1) {
+        alert("No more music!");
+        setSearchPending(false);
+        return;
+      }
+      result = await getExactSearchList(exactSearchIndex);
+      result = result.concat(oldResult);
+    } else if (artistSearch) {
+      if (artistSearchIndex === -1) {
+        alert("No more music!");
+        setSearchPending(false);
+        return;
+      }
+      result = await getArtistSearchList(artistSearchIndex);
+      result = result.concat(oldResult);
+    } else if (musicSearch) {
+      if (musicSearchIndex === -1) {
+        alert("No more music!");
+        setSearchPending(false);
+        return;
+      }
+      result = await getMusicSearchList(musicSearchIndex);
+      result = result.concat(oldResult);
+    } else {
+      alert("You have to input music or artist name!");
+      setSearchPending(false);
+      return;
+    }
 
     setSearchRows(result)
     setSearchPending(false)

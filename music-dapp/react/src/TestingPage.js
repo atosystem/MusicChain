@@ -89,7 +89,6 @@ const TestingPage = (props) => {
   const [searchMusic, setSearchMusic] = useState("");
   const [searchArtist, setSearchArtist] = useState("");
   const [searchHash, setSearchHash] = useState("");
-  const [searchCoverFrom, setSearchCoverFrom] = useState("");
   const [transToken, setTransToken] = useState("");
   const [batchUploadJsonFile, setBatchUploadJsonFile] = useState([]);
 
@@ -309,20 +308,8 @@ const TestingPage = (props) => {
                   }}
                 />
                 <TextField
-                  id="music-hash-textfield"
-                  label="CoverFrom"
-                  placeholder="Type song's Cover From..."
-                  multiline
-                  variant="outlined"
-                  size="small"
-                  value={searchCoverFrom}
-                  onChange={(event) => {
-                    setSearchCoverFrom(event.target.value);
-                  }}
-                />
-                <TextField
-                  id="music-hash-textfield"
-                  label="Token"
+                  id='music-hash-textfield'
+                  label='Token'
                   placeholder="Type token value..."
                   multiline
                   variant="outlined"

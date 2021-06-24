@@ -1414,6 +1414,7 @@
     "5777": {
       "events": {},
       "links": {},
+<<<<<<< Updated upstream
 <<<<<<< HEAD
       "address": "0x2536fAFf81817e4Ac8b5eAF1271AD723ae7cfc86",
       "transactionHash": "0x3ed7ce9ae88edc83911bd932165a681c309bcddc184325a58e8293cc4cb8ef3d"
@@ -1429,6 +1430,14 @@
   "schemaVersion": "3.4.0",
   "updatedAt": "2021-06-24T15:42:09.433Z",
 >>>>>>> 16757bda8f23f4ffe6e6cefbe708635a6e9213c2
+=======
+      "address": "0x4605f2C2508c193fbc50BA9A8ae337633620b615",
+      "transactionHash": "0x3cac69fa869689c1e72eff3efe223b0bb4905443d84f84e6830b350b12f01d31"
+    }
+  },
+  "schemaVersion": "3.4.0",
+  "updatedAt": "2021-06-24T10:55:34.476Z",
+>>>>>>> Stashed changes
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
