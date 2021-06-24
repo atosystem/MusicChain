@@ -43,3 +43,8 @@ Clear all data
 ```
 ./reset-all.sh
 ``` -->
+
+### Formater
+```
+npm run format
+```

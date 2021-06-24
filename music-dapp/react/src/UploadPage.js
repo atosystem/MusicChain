@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { uploadAudioIPFS } from './ipfs/upload';
-import clsx from 'clsx';
+import React, { useState, useEffect } from "react";
+import { uploadAudioIPFS } from "./ipfs/upload";
+import clsx from "clsx";
 
 import {
   makeStyles,
@@ -12,14 +12,14 @@ import {
   Button,
   Snackbar,
   CircularProgress,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import Alert from '@material-ui/lab/Alert';
+import Alert from "@material-ui/lab/Alert";
 // import {} from '@material-ui/lab/Alert';
 
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
-import MatchingResultList from './components/MatchingResultList';
+import MatchingResultList from "./components/MatchingResultList";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,14 +27,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
     paddingBottom: theme.spacing(5),
-    backgroundColor: '#202020',
+    backgroundColor: "#202020",
   },
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    backgroundColor: '#808080',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+    backgroundColor: "#808080",
   },
   fixedHeight: {
     height: 240,
@@ -50,15 +50,15 @@ const useStyles = makeStyles((theme) => ({
     // width: '36ch',
   },
   inputForm: {
-    '& .MuiTextField-root': {
+    "& .MuiTextField-root": {
       margin: theme.spacing(2),
       marginLeft: theme.spacing(4),
       marginRight: theme.spacing(4),
-      width: '36ch',
+      width: "36ch",
     },
   },
   uploadinput: {
-    display: 'none',
+    display: "none",
   },
   selectbutton: {
     margin: theme.spacing(2),
@@ -68,15 +68,15 @@ const useStyles = makeStyles((theme) => ({
   fileinput: {
     margin: theme.spacing(1),
     marginLeft: theme.spacing(4),
-    width: '56ch',
+    width: "56ch",
   },
   uploadbutton: {
-    position: 'relative',
-    backgroundColor: '#39a9cb',
+    position: "relative",
+    backgroundColor: "#39a9cb",
     margin: theme.spacing(2),
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
-    height: '5ch',
+    height: "5ch",
   },
 }));
 
@@ -92,20 +92,19 @@ const UploadPage = (props) => {
   // for alert msg
   const callAlert = props.callAlert;
   useEffect(() => {
-    setPage('Upload');
+    setPage("Upload");
   }, []);
 
   // states
-  const [songname, setSongName] = useState('');
-  const [songartist, setSongArtist] = useState('');
+  const [songname, setSongName] = useState("");
+  const [songartist, setSongArtist] = useState("");
   const [songdata, setSongData] = useState({ selectedFile: null });
-  const [songHash, setSongHash] = useState('');
+  const [songHash, setSongHash] = useState("");
   const [fileTextField, setFileTextField] = useState(
     "you haven't select a file yet..."
   );
-  const [fingerprstatus, setFingerprstatus] = useState('no file yet');
+  const [fingerprstatus, setFingerprstatus] = useState("no file yet");
   const [backendInfo, setBackendInfo] = useState([]);
-
 
   // // for alert msg
   // const [alertmsg, setAlermsg] = useState('');
@@ -132,7 +131,7 @@ const UploadPage = (props) => {
     //   "exact" : false
     // }
   ]);
-  const [pendingMsg, setPendingMsg] = useState('');
+  const [pendingMsg, setPendingMsg] = useState("");
   const [uploadPending, setUploadPending] = useState(false);
   const showResult = async (data) => {
     data.sort((x, y) => Number(x.dist) - Number(y.dist));
@@ -152,11 +151,13 @@ const UploadPage = (props) => {
   };
 
   const getMusicByHash = async (h) => {
-    const result = await contract.methods.getMusicByHash(h).call({ from: accounts[0] });
+    const result = await contract.methods
+      .getMusicByHash(h)
+      .call({ from: accounts[0] });
     return result;
   };
 
-  const uploadMusicBlockchain = async (retHash, coverFromHash = 'None') => {
+  const uploadMusicBlockchain = async (retHash, coverFromHash = "None") => {
     try {
       const music = await contract.methods
         .uploadMusic(retHash, songname, songartist, coverFromHash)
@@ -174,20 +175,20 @@ const UploadPage = (props) => {
     // console.log(`contract: ${contract}`);
     // Force user to fill these input field
     if (!songname) {
-      callAlert('You have to set the SONG name!');
+      callAlert("You have to set the SONG name!");
       return;
     }
     if (!songartist) {
-      callAlert('You have to set the ARTIST name!');
+      callAlert("You have to set the ARTIST name!");
       return;
     }
     if (!songdata.selectedFile) {
-      callAlert('You have to upload a file!');
+      callAlert("You have to upload a file!");
       return;
     }
 
     if (songdata.selectedFile.size >= 100000000) {
-      callAlert('The file limit is 100 MB!');
+      callAlert("The file limit is 100 MB!");
       setSongData({ selectedFile: null });
       return;
     }
@@ -198,52 +199,51 @@ const UploadPage = (props) => {
         `http://localhost:3001/processupload?h=${retHash}`,
         { withCredentials: true }
       );
-      source.addEventListener('message', (message) => {
+      source.addEventListener("message", (message) => {
         // let mydata = JSON.stringify(JSON.parse(message.data))
-        console.log('Got', message.data);
+        console.log("Got", message.data);
         let msg_obj = JSON.parse(message.data);
         // setBackendInfo(backendInfo.concat([JSON.parse(JSON.stringify(msg_obj))]))
         // setBackendInfo(backendInfo.push(msg_obj))
         setBackendInfo(backendInfo.concat(JSON.parse(JSON.stringify(msg_obj))));
 
-        if (msg_obj.status === 'saved_query_hpcp') {
+        if (msg_obj.status === "saved_query_hpcp") {
           source.close();
           setUploadPending(false);
           // if (msg_obj.payload.length > 0) {
           //   console.log("coverfrom" + msg_obj.payload[0])
           //   uploadMusicBlockchain(retHash, msg_obj.payload[0]);
-          // } 
+          // }
           if (msg_obj.payload.length > 0) {
-            console.log("coverfrom" + msg_obj.payload[0])
+            console.log("coverfrom" + msg_obj.payload[0]);
             uploadMusicBlockchain(retHash, msg_obj.payload[0]);
           } else {
             uploadMusicBlockchain(retHash);
           }
-
-        } else if (msg_obj.status === 'matching_results') {
+        } else if (msg_obj.status === "matching_results") {
           // let x = { "status": "matching_results", "payload": [{ "song_hash": "QmRhPHUnNHUodTJb5QciUj6zuEHZZd5fFVTBoJnUTwKh9N", "dist": 0.22824497520923615, "exact": false }, { "song_hash": "QmY3vX8TRHvM8RsgJCjHP4FVRNq1CgC6poTPUBxEHRRhkw", "dist": 0.15082646906375885, "exact": false }] }
           showResult(msg_obj.payload);
-        } else if (msg_obj.status === 'music_exist') {
+        } else if (msg_obj.status === "music_exist") {
           source.close();
           setUploadPending(false);
-          callAlert('This music is uploaded before');
+          callAlert("This music is uploaded before");
         } else {
           // setFingerprstatus(message.data);
         }
-        console.log('backendInfo', backendInfo);
+        console.log("backendInfo", backendInfo);
       });
 
       // uplaodMusicBlockchain(retHash);
     });
 
     // reset input data
-    setSongName('');
-    setSongArtist('');
+    setSongName("");
+    setSongArtist("");
     setFileTextField("you haven't select a file yet...");
   };
 
   return (
-    <Container maxWidth='lg' className={classes.container}>
+    <Container maxWidth="lg" className={classes.container}>
       {/* <Snackbar
         open={openAlert}
         autoHideDuration={6000}
@@ -257,36 +257,36 @@ const UploadPage = (props) => {
         <Grid item xs={12}>
           <Paper className={UploadPaperHeight}>
             <Typography
-              component='h2'
-              variant='h6'
+              component="h2"
+              variant="h6"
               gutterBottom
-              style={{ color: 'white', fontSize: 20 }}
+              style={{ color: "white", fontSize: 20 }}
             >
               Start upload your music!
             </Typography>
 
-            <form className={classes.inputForm} noValidate autoComplete='off'>
+            <form className={classes.inputForm} noValidate autoComplete="off">
               <div>
                 <TextField
-                  id='name-textfield'
-                  label='Name'
+                  id="name-textfield"
+                  label="Name"
                   placeholder="Type song's name..."
                   value={songname}
                   multiline
-                  variant='outlined'
-                  size='small'
+                  variant="outlined"
+                  size="small"
                   onChange={(event) => {
                     setSongName(event.target.value);
                   }}
                 />
                 <TextField
-                  id='artist-textfield'
-                  label='Artist'
+                  id="artist-textfield"
+                  label="Artist"
                   placeholder="Type song's artist..."
                   value={songartist}
                   multiline
-                  variant='outlined'
-                  size='small'
+                  variant="outlined"
+                  size="small"
                   onChange={(event) => {
                     setSongArtist(event.target.value);
                   }}
@@ -296,19 +296,19 @@ const UploadPage = (props) => {
 
             <div>
               <input
-                accept='audio/*'
-                id='contained-button-file'
+                accept="audio/*"
+                id="contained-button-file"
                 className={classes.uploadinput}
-                type='file'
+                type="file"
                 onChange={(event) => {
                   setSongData({ selectedFile: event.target.files[0] });
                   setFileTextField(event.target.files[0].name);
                 }}
               />
-              <label htmlFor='contained-button-file'>
+              <label htmlFor="contained-button-file">
                 <Button
-                  variant='contained'
-                  component='span'
+                  variant="contained"
+                  component="span"
                   className={classes.selectbutton}
                 >
                   Select File
@@ -317,8 +317,8 @@ const UploadPage = (props) => {
 
               <TextField
                 className={classes.fileinput}
-                id='file-textfield'
-                label='File Name'
+                id="file-textfield"
+                label="File Name"
                 multiline
                 value={fileTextField}
                 InputProps={{
@@ -328,7 +328,7 @@ const UploadPage = (props) => {
 
               <Button
                 className={classes.uploadbutton}
-                variant='contained'
+                variant="contained"
                 startIcon={<CloudUploadIcon />}
                 onClick={() => {
                   handleUploads();
@@ -341,12 +341,12 @@ const UploadPage = (props) => {
               {/* {uploadPending && <CircularProgress />} */}
               {backendInfo.length
                 ? backendInfo.map((b, ind) => {
-                  return (
-                    <Alert key={ind} severity='success'>
-                      {b.status}
-                    </Alert>
-                  );
-                })
+                    return (
+                      <Alert key={ind} severity="success">
+                        {b.status}
+                      </Alert>
+                    );
+                  })
                 : null}
             </div>
 

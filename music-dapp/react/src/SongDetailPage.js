@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import { downloadAudioIPFS } from './ipfs/download';
+import React, { useState, useEffect } from "react";
+import clsx from "clsx";
+import { downloadAudioIPFS } from "./ipfs/download";
+import Moment from "moment";
+import AlbumIcon from "@material-ui/icons/Album";
 
 import {
   makeStyles,
@@ -13,22 +15,20 @@ import {
   Stepper,
   Step,
   StepContent,
-  StepLabel
-} from '@material-ui/core';
+  StepLabel,
+} from "@material-ui/core";
 
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import Timeline from "@material-ui/lab/Timeline";
+import TimelineItem from "@material-ui/lab/TimelineItem";
+import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
+import TimelineConnector from "@material-ui/lab/TimelineConnector";
+import TimelineContent from "@material-ui/lab/TimelineContent";
+import TimelineDot from "@material-ui/lab/TimelineDot";
+import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 
-import GetAppIcon from '@material-ui/icons/GetApp';
-import { useParams, useHistory } from 'react-router';
+import GetAppIcon from "@material-ui/icons/GetApp";
+import { useParams, useHistory } from "react-router";
 import { BrowserRouter as Router, Link } from "react-router-dom";
-
-
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -36,48 +36,48 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
     paddingBottom: theme.spacing(5),
-    backgroundColor: '#202020',
+    backgroundColor: "#202020",
   },
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    backgroundColor: '#808080',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+    backgroundColor: "#808080",
   },
   fixedHeight: {
     height: 480,
   },
   inputForm: {
-    '& .MuiTextField-root': {
+    "& .MuiTextField-root": {
       margin: theme.spacing(2),
       marginLeft: theme.spacing(4),
       marginRight: theme.spacing(4),
-      width: '36ch',
+      width: "36ch",
     },
   },
   testingButtons: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(2),
       marginBottom: theme.spacing(3),
     },
   },
   downloadForm: {
-    '& .MuiTextField-root': {
+    "& .MuiTextField-root": {
       margin: theme.spacing(2),
       marginLeft: theme.spacing(4),
       marginRight: theme.spacing(4),
       marginBottom: theme.spacing(3),
-      width: '60ch',
+      width: "60ch",
     },
   },
   downloadbutton: {
-    position: 'relative',
-    backgroundColor: '#39a9cb',
+    position: "relative",
+    backgroundColor: "#39a9cb",
     margin: theme.spacing(2),
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
-    height: '5ch',
+    height: "5ch",
   },
   audioplayer: {
     margin: theme.spacing(2),
@@ -96,31 +96,26 @@ const SongDetailPage = (props) => {
   const setPlayersrc = props.setPlayersrc;
   const setPage = props.setPage;
 
-
-
   // states
-  const [songHash, setSongHash] = useState('');
-  const [songName, setSongName] = useState('');
-  const [songArtist, setSongArtist] = useState('');
-  const [searchHash, setSearchHash] = useState('');
+  const [songHash, setSongHash] = useState("");
+  const [songName, setSongName] = useState("");
+  const [songArtist, setSongArtist] = useState("");
+  const [searchHash, setSearchHash] = useState("");
   const [songData, setSongData] = useState({});
   const [isMyMusic, setIsMyMusic] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
   const [copyrightChain, setCopyrightChain] = useState([]);
 
-
   const { queryhash } = useParams();
 
   useEffect(() => {
-    setPage('Detail');
-    setSearchHash(queryhash)
+    setPage("Detail");
+    setSearchHash(queryhash);
   }, []);
 
   useEffect(async () => {
     await getMusicByHash();
-  }, [accounts, contract])
-
-
+  }, [accounts, contract, queryhash]);
 
   // const testGetMusic = async () => {
   //   const result = await contract.methods
@@ -133,63 +128,113 @@ const SongDetailPage = (props) => {
 
   const getMusicByHash = async () => {
     if (contract.methods == undefined) {
-      return
+      return;
     } else if (accounts.length == 0) {
-      return
+      return;
     }
-    const result = await contract.methods.getMusicByHash(queryhash).call({ from: accounts[0] });
-    setSongData(result)
-    const result_own = await contract.methods.findUploadMusic(queryhash).call({ from: accounts[0] });
-    setIsMyMusic(result_own)
+    const result = await contract.methods
+      .getMusicByHash(queryhash)
+      .call({ from: accounts[0] });
+    setSongData(result);
+    const result_own = await contract.methods
+      .findUploadMusic(queryhash)
+      .call({ from: accounts[0] });
+    setIsMyMusic(result_own);
 
-    const result_purchased = await contract.methods.findBoughtMusic(queryhash).call({ from: accounts[0] });
-    setIsPurchased(result_purchased)
+    const result_purchased = await contract.methods
+      .findBoughtMusic(queryhash)
+      .call({ from: accounts[0] });
+    setIsPurchased(result_purchased);
 
-    const result_chain = await contract.methods.getMusicChainByHash(queryhash, 5).call({ from: accounts[0] });
-    console.log("result_chain")
-    console.log(result_chain.filter((x) => (x.ipfsHash !== "")))
-    setCopyrightChain(result_chain.filter((x) => (x.ipfsHash !== "")))
-
+    const result_chain = await contract.methods
+      .getMusicChainByHash(queryhash, 5)
+      .call({ from: accounts[0] });
+    console.log("result_chain");
+    console.log(result_chain.filter((x) => x.ipfsHash !== ""));
+    setCopyrightChain(result_chain.filter((x) => x.ipfsHash !== ""));
   };
-
 
   const buyMusic = async () => {
     const result = await contract.methods
       .buyMusicByHash(queryhash)
       .send({ from: accounts[0] });
     console.log(result);
+    await getMusicByHash();
   };
 
-
-
-
   return (
-    <Container maxWidth='lg' className={classes.container}>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={8} lg={12}>
+    <Container maxWidth="lg" className={classes.container}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8} lg={8}>
           <Paper className={fixedHeightPaper}>
+            <div>
+              <Typography
+                component="h2"
+                variant="h1"
+                gutterBottom
+                style={{ color: "white", fontSize: 40 }}
+              >
+                {songData["name"]}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="h2"
+                variant="h6"
+                gutterBottom
+                style={{ color: "white", fontSize: 20 }}
+              >
+                Artist : {songData["artist"]}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="h2"
+                variant="h6"
+                gutterBottom
+                style={{ color: "white", fontSize: 20 }}
+              >
+                Upload Time :{" "}
+                {Moment.unix(songData["uploadTime"])
+                  .zone(8)
+                  .format("MM/D/YYYY, hh:mm:ss")}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="h2"
+                variant="h6"
+                gutterBottom
+                style={{ color: "white", fontSize: 20 }}
+              >
+                Ipfs Hash : {songData["ipfsHash"]}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="h2"
+                variant="h6"
+                gutterBottom
+                style={{ color: "white", fontSize: 20 }}
+              >
+                Uploader : {songData["uploader"]}
+              </Typography>
+            </div>
+
             <Typography
-              component='h2'
-              variant='h6'
+              component="h2"
+              variant="h6"
               gutterBottom
-              style={{ color: 'white', fontSize: 20 }}
-            >
-              Details
-            </Typography>
-            <Typography
-              component='h2'
-              variant='h6'
-              gutterBottom
-              style={{ color: 'white', fontSize: 15 }}
+              style={{ color: "white", fontSize: 15 }}
             >
               {/* need to beautify UI */}
-              {songData.hasOwnProperty('coverFrom') && Object.keys(songData).map((k) => {
+              {/* {songData.hasOwnProperty('coverFrom') && Object.keys(songData).map((k) => {
                 return <div key={k} > {k} : {songData[k]}</div>
               })
-              }
+              } */}
             </Typography>
 
-            <form className={classes.inputForm} noValidate autoComplete='off'>
+            <form className={classes.inputForm} noValidate autoComplete="off">
               {/* <div>
                 
                 <TextField
@@ -232,7 +277,7 @@ const SongDetailPage = (props) => {
 
               <div className={classes.testingButtons}>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   onClick={() => {
                     if (isMyMusic || isPurchased) {
                       // code to call our footer music player
@@ -241,35 +286,58 @@ const SongDetailPage = (props) => {
                     }
                   }}
                 >
-                  {(isMyMusic || isPurchased) ? "Play Music" : "Buy Music"}
-
+                  {isMyMusic || isPurchased ? "Play Music" : "Buy Music"}
                 </Button>
               </div>
             </form>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+          <Paper className={fixedHeightPaper}>
+            <Typography
+              component="h2"
+              variant="h6"
+              gutterBottom
+              style={{ color: "white", fontSize: 20 }}
+            >
               Copyright Chain
-            <Timeline align="right">
-              {copyrightChain.length && copyrightChain.map((ent, index) => {
-                return (
-                  <TimelineItem key={ent.ipfsHash}>
-                    <TimelineOppositeContent>
-                      <Typography color="textSecondary">{ent.artist}</Typography>
-                    </TimelineOppositeContent>
-                    <TimelineSeparator>
-                      <TimelineDot color={index == 0 ? "secondary" : "primary"} />
-                      <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <Typography   >
-                        {/* <Link to={`/detail/${ent.ipfsHash}`}>{ent.name}</Link> */}
-                        <Button onClick={() => {
-                          history.push(`/detail/${ent.ipfsHash}`);
-                        }} >{ent.name}</Button>
-                      </Typography>
-                    </TimelineContent>
-                  </TimelineItem>
-                )
-              })}
+            </Typography>
 
+            <Timeline align="right">
+              {copyrightChain.length &&
+                copyrightChain.map((ent, index) => {
+                  return (
+                    <TimelineItem key={ent.ipfsHash}>
+                      <TimelineOppositeContent>
+                        <Typography color="textSecondary">
+                          {ent.artist}
+                        </Typography>
+                      </TimelineOppositeContent>
+                      <TimelineSeparator>
+                        <TimelineDot
+                          color={index == 0 ? "secondary" : "primary"}
+                        />
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                        <Typography>
+                          {/* <Link to={`/detail/${ent.ipfsHash}`}>{ent.name}</Link> */}
+                          {searchHash == ent.ipfsHash ? (
+                            ent.name
+                          ) : (
+                            <Button
+                              onClick={() => {
+                                history.push(`/detail/${ent.ipfsHash}`);
+                              }}
+                            >
+                              {ent.name}
+                            </Button>
+                          )}
+                        </Typography>
+                      </TimelineContent>
+                    </TimelineItem>
+                  );
+                })}
             </Timeline>
           </Paper>
         </Grid>
