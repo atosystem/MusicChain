@@ -160,6 +160,8 @@ const SongDetailPage = (props) => {
       .buyMusicByHash(queryhash)
       .send({ from: accounts[0] });
     console.log(result);
+    await getMusicByHash();
+
   };
 
 
@@ -321,9 +323,10 @@ const SongDetailPage = (props) => {
                     <TimelineContent>
                       <Typography   >
                         {/* <Link to={`/detail/${ent.ipfsHash}`}>{ent.name}</Link> */}
+                        {searchHash==ent.ipfsHash?ent.name:
                         <Button onClick={() => {
                           history.push(`/detail/${ent.ipfsHash}`);
-                        }} >{ent.name}</Button>
+                        }} >{ent.name}</Button>}
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>

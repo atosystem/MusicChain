@@ -14,10 +14,15 @@
 
     ![](https://i.imgur.com/tlAarYJ.jpg)
 
-6. Run ```$ python parse.py```
+6. Run ```$ bash uploadBatch.sh```
     
     The result should be as the following:
     ![](https://i.imgur.com/JBUttVx.png)
+    ...
+    ![](https://i.imgur.com/uqhrpeW.png)
+
+
+
     
     if you see something like this:
     ![](https://i.imgur.com/0l1COT3.png)

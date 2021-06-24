@@ -181,7 +181,7 @@ const SearchPage = (props) => {
             >
               Search Results
             </Typography>
-            {isSearchPending || searchRows.length ? <SearchResultList rows={searchRows} /> : null}
+            {isSearchPending || searchRows.length ? <SearchResultList rows={searchRows} minColumns={false} /> : null}
 
           </Paper>
         </Grid>

@@ -27,15 +27,19 @@ const useStyles = makeStyles({
 const SearchResultList = (props) => {
     const classes = useStyles();
     const rows = props.rows;
+    const minColumns = props.minColumns
     return (
         <TableContainer component={Paper}>
             {rows.length ? (<Table className={classes.table} size="small" aria-label="a dense table">
                 <TableHead>
                     <TableRow>
+
                         <TableCell>Title</TableCell>
                         <TableCell align="right">Artist</TableCell>
-                        <TableCell align="right">ipfs hash</TableCell>
-                        <TableCell align="right">uploader</TableCell>
+                        {!minColumns? <TableCell align="right">ipfs hash</TableCell>:null}
+                        {!minColumns? <TableCell align="right">uploader</TableCell>:null}
+
+                        
                         {/* <TableCell align="right">Bought</TableCell> */}
                     </TableRow>
                 </TableHead>
@@ -43,11 +47,11 @@ const SearchResultList = (props) => {
                     {rows.map((row) => (
                         <TableRow key={row.ipfs_hash}>
                             <TableCell component="th" scope="row">
-                                {row.name}
+                            {minColumns? <Link to={`/detail/${row.ipfsHash}`} >{row.name}</Link>:row.name}
                             </TableCell>
                             <TableCell align="right">{row.artist}</TableCell>
-                            <TableCell align="right"><Link to={`/detail/${row.ipfsHash}`} >{row.ipfsHash}</Link> </TableCell>
-                            <TableCell align="right">{row.uploader}</TableCell>
+                            {!minColumns? <TableCell align="right"><Link to={`/detail/${row.ipfsHash}`} >{row.ipfsHash}</Link> </TableCell>:null}
+                            {!minColumns? <TableCell align="right">{row.uploader}</TableCell>:null}
                             {/* <TableCell align="right">{}</TableCell> */}
                         </TableRow>
                     ))}
@@ -58,28 +62,28 @@ const SearchResultList = (props) => {
                     <TableRow>
                         <TableCell>Title</TableCell>
                         <TableCell align="right">Artist</TableCell>
-                        <TableCell align="right">ipfs hash</TableCell>
-                        <TableCell align="right">uploader</TableCell>
+                        {!minColumns? <TableCell align="right">ipfs hash</TableCell>:null}
+                        {!minColumns? <TableCell align="right">uploader</TableCell>:null}
                         {/* <TableCell align="right">Bought</TableCell> */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
+                    <TableRow key={1}>
                         <TableCell component="th" scope="row">
                             <Skeleton animation="wave" />
                         </TableCell>
                         <TableCell align="right"><Skeleton animation="wave" /></TableCell>
-                        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
-                        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+                        {!minColumns? <TableCell align="right"><Skeleton animation="wave" /></TableCell>:null}
+                        {!minColumns? <TableCell align="right"><Skeleton animation="wave" /></TableCell>:null}
                         {/* <TableCell align="right"><Skeleton animation="wave" /></TableCell> */}
                     </TableRow>
-                    <TableRow>
+                    <TableRow key={2}>
                         <TableCell component="th" scope="row">
                             <Skeleton animation="wave" />
                         </TableCell>
                         <TableCell align="right"><Skeleton animation="wave" /></TableCell>
-                        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
-                        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+                        {!minColumns? <TableCell align="right"><Skeleton animation="wave" /></TableCell>:null}
+                        {!minColumns? <TableCell align="right"><Skeleton animation="wave" /></TableCell>:null}
                         {/* <TableCell align="right"><Skeleton animation="wave" /></TableCell> */}
                     </TableRow>
                 </TableBody>

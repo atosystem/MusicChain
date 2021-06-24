@@ -131,10 +131,6 @@ const TestingPage = (props) => {
   };
 
   const batch_upload = async () => {
-    // const result = await contract.methods
-    //   .uploadMusic()
-    //   .send({ from: accounts[0] });
-    // console.log(result);
     const bujf = batchUploadJsonFile;
     console.log(bujf);
     if (bujf.length <= 0) {
