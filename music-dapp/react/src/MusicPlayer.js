@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#fafafa',
-    borderRadius: theme.spacing(4)
+    borderRadius: theme.spacing(4),
   },
   icon: {
     color: '#909090',
@@ -113,19 +113,20 @@ export default function MusicPlayer(props) {
   const [volume, setVolume] = useState(0.4)
 
   const [anchorEl, setAnchorEl] = useState(null);
-
   const musicList = props.musicList;
   const setMusicList = props.setMusicList;
 
-  
-
-  const [nowPlaying, setNowPlaying] = useState(musicList.find(m => m.onChoose === true));
+  const defaultPlaying = musicList.find(m => m.onChoose === true) ?
+   musicList.find(m => m.onChoose === true) : 
+   {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+  const [nowPlaying, setNowPlaying] = useState(defaultPlaying);
   const [audio, setAudio] = useState(new Audio(nowPlaying.src));
   const [durationTime, setDurationTime] = useState(0);
   const [progressTime, setProgressTime] = useState(0);
 
   useEffect(() => {
     audio.onloadedmetadata = () => {setDurationTime(audio.duration)};
+    audio.onloadeddata = () => {audio.play()};
     audio.ontimeupdate = () => {setProgressTime(audio.currentTime)};
     audio.onended = () => {
       setProgressTime(0);
@@ -161,10 +162,9 @@ export default function MusicPlayer(props) {
   };
 
   const handleSwitchAudio = (music) => {
-    setOnplayState(false);
+    setOnplayState(true);
     audio.pause();
     audio.remove();
-    setAudio(null);
     setProgressTime(0);
     setNowPlaying(music);
     setAudio(new Audio(music.src));
@@ -173,6 +173,21 @@ export default function MusicPlayer(props) {
 
   const playlist_open = Boolean(anchorEl);
   const playlist_id = playlist_open ? 'simple-popover' : undefined;
+
+  const useSpinStyles = makeStyles(() => ({
+    iconPaper_rotate: {
+      animation: "$spin 8s linear infinite",
+    },
+    "@keyframes spin": {
+      "0%": {
+        transform: `rotate(-${audio.currentTime * 45 % 360}deg)`,
+      },
+      "100%": {
+        transform: `rotate(-${360 + audio.currentTime * 45 % 360}deg)`,
+      },
+    },
+  }));
+  const spinIconClasses= useSpinStyles()
 
   document.body.onkeyup = function(event){
     if(event.keyCode == 32){
@@ -194,6 +209,13 @@ export default function MusicPlayer(props) {
               edge="start"
               onClick={() => {
                 setOnplayState(true);
+                let newList = musicList.map(m => {
+                  if (m.id === nowPlaying.id) {
+                    m.onPlay = !onplayState;
+                  }
+                  return m
+                })
+                setMusicList(newList)
                 audio.play();
               }}
             >
@@ -208,6 +230,13 @@ export default function MusicPlayer(props) {
             edge="start"
             onClick={() => {
               setOnplayState(false);
+              let newList = musicList.map(m => {
+                if (m.id === nowPlaying.id) {
+                  m.onPlay = !onplayState;
+                }
+                return m
+              })
+              setMusicList(newList)
               audio.pause();
             }}
           >
@@ -221,6 +250,30 @@ export default function MusicPlayer(props) {
   const SubControls = (control) => {
     switch(control) {
       case 0:
+        var id = musicList.findIndex(m => m.id === nowPlaying.id);
+        audio.onended = () => {
+          var newList = musicList.map(m => {
+            m.onPlay = true;
+            m.onChoose = false;
+            if (id !== musicList.length-1) {
+              if (m.id === musicList[id+1].id) {
+                m.onChoose = true;
+              }
+            }
+            if (m.id === nowPlaying.id) {
+              m.onPlay = !onplayState;
+            }
+            return m;
+          })
+          setMusicList(newList)
+          if (id === musicList.length-1) {
+            handleSwitchAudio(
+              {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+            )
+          } else {
+            handleSwitchAudio(musicList[id+1]);
+          }
+        }
         return(
           <Tooltip title="Play in order" aria-label="play in order">
             <IconButton
@@ -234,6 +287,22 @@ export default function MusicPlayer(props) {
           </Tooltip>
         );
       case 1:
+        var id = Math.floor(Math.random() * musicList.length)
+        audio.onended = () => {
+          var newList = musicList.map(m => {
+            m.onPlay = true;
+            m.onChoose = false;
+            if (m.id === musicList[id].id) {
+              m.onChoose = true;
+            }
+            if (m.id === nowPlaying.id) {
+              m.onPlay = !onplayState;
+            }
+            return m;
+          })
+          setMusicList(newList)
+          handleSwitchAudio(musicList[id]);
+        }
         return(
           <Tooltip title="Shuffle playback" aria-label="shuffle playback">
             <IconButton
@@ -247,6 +316,32 @@ export default function MusicPlayer(props) {
           </Tooltip>
         );
       case 2:
+        var id = musicList.findIndex(m => m.id === nowPlaying.id);
+        audio.onended = () => {
+          var newList = musicList.map(m => {
+            m.onPlay = true;
+            m.onChoose = false;
+            if (id !== musicList.length-1) {
+              if (m.id === musicList[id+1].id) {
+                m.onChoose = true;
+              }
+            } else {
+              if (m.id === musicList[0].id) {
+                m.onChoose = true;
+              }
+            }
+            if (m.id === nowPlaying.id) {
+              m.onPlay = !onplayState;
+            }
+            return m;
+          })
+          setMusicList(newList)
+          if (id === musicList.length-1) {
+            handleSwitchAudio(musicList[0])
+          } else {
+            handleSwitchAudio(musicList[id+1]);
+          }
+        }
         return(
           <Tooltip title="List loop" aria-label="list loop">
             <IconButton
@@ -260,6 +355,9 @@ export default function MusicPlayer(props) {
           </Tooltip>
         );
       case 3:
+        audio.onended = () => {
+          handleSwitchAudio(nowPlaying)
+        }
         return(
           <Tooltip title="Single loop" aria-label="single loop">
             <IconButton
@@ -277,7 +375,11 @@ export default function MusicPlayer(props) {
 
   return (
     <Toolbar>
-      <Paper className={classes.iconPaper}>
+      <Paper className={clsx(classes.iconPaper, onplayState && spinIconClasses.iconPaper_rotate)} 
+        style={{
+          transform: `rotate(-${audio.currentTime * 45 % 360}deg)`,
+        }}
+      >
         <MusicNoteIcon className={classes.icon}/>
       </Paper>
 
@@ -323,7 +425,34 @@ export default function MusicPlayer(props) {
       <Tooltip title="Previous track" aria-label="skip to previous">
         <IconButton
           edge="start"
-          onClick={() => {}}
+          disabled={nowPlaying.id === 'dummy' || musicList.length === 0}
+          onClick={() => {
+            let id = musicList.findIndex(m => m.id === nowPlaying.id);
+            let music = (id === 0) ? musicList[musicList.length-1] : musicList[id-1];
+            let newList = musicList.map(m => {
+              m.onPlay = true;
+              m.onChoose = false;
+              if (m.id === music.id) {
+                m.onChoose = true;
+              }
+              if (m.id === nowPlaying.id) {
+                m.onPlay = !onplayState;
+              }
+              return m;
+            })
+            setMusicList(newList)
+            if (nowPlaying.id !== music.id) {
+              handleSwitchAudio(music)
+            } else {
+              if (onplayState) {
+                setOnplayState(false)
+                audio.pause();
+              } else {
+                setOnplayState(true)
+                audio.play();
+              }
+            }
+          }}
         >
           <SkipPrevious fontSize="large" className={classes.icon}/>
         </IconButton>
@@ -334,7 +463,34 @@ export default function MusicPlayer(props) {
       <Tooltip title="Next track" aria-label="skip to next">
         <IconButton
           edge="start"
-          onClick={() => {}}
+          disabled={nowPlaying.id === 'dummy' || musicList.length === 0}
+          onClick={() => {
+            let id = musicList.findIndex(m => m.id === nowPlaying.id);
+            let music = (id === musicList.length-1) ? musicList[0] : musicList[id+1];
+            let newList = musicList.map(m => {
+              m.onPlay = true;
+              m.onChoose = false;
+              if (m.id === music.id) {
+                m.onChoose = true;
+              }
+              if (m.id === nowPlaying.id) {
+                m.onPlay = !onplayState;
+              }
+              return m;
+            })
+            setMusicList(newList)
+            if (nowPlaying.id !== music.id) {
+              handleSwitchAudio(music);
+            } else {
+              if (onplayState) {
+                setOnplayState(false)
+                audio.pause();
+              } else {
+                setOnplayState(true)
+                audio.play();
+              }
+            }
+          }}
         >
           <SkipNextIcon fontSize="large" className={classes.icon}/>
         </IconButton>
@@ -437,12 +593,13 @@ export default function MusicPlayer(props) {
                     style={{height: '100%'}}
                     onClick={() => {
                       let newList = musicList.map(m => {
+                        m.onPlay = true;
                         m.onChoose = false;
                         if (m.id === music.id) {
                           m.onChoose = true;
                         }
                         if (m.id === nowPlaying.id) {
-                          m.onPlay = !m.onPlay;
+                          m.onPlay = !onplayState;
                         }
                         return m;
                       })
