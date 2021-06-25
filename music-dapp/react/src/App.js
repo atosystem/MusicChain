@@ -162,7 +162,12 @@ function App() {
   const [web3, setWeb3] = useState({});
   const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState({});
-  const [playersrc, setPlayersrc] = useState("");
+  // const [playersrc, setPlayersrc] = useState("");
+
+  const [musicList, setMusicList] = useState([
+    {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
+    {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
+  ])
 
   useEffect(async () => {
     await connectWeb3();
@@ -326,7 +331,7 @@ function App() {
                 contract={contract}
                 accounts={accounts}
                 setPage={setPage}
-                setPlayersrc={setPlayersrc}
+                setMusicList={setMusicList}
               />
             </Route>
             <Route exact path="/test">
@@ -335,7 +340,7 @@ function App() {
                 contract={contract}
                 accounts={accounts}
                 setPage={setPage}
-                setPlayersrc={setPlayersrc}
+                setMusicList={setMusicList}
               />
             </Route>
             <Route exact path="/detail/:queryhash">
@@ -344,7 +349,7 @@ function App() {
                 contract={contract}
                 accounts={accounts}
                 setPage={setPage}
-                setPlayersrc={setPlayersrc}
+                setMusicList={setMusicList}
               />
             </Route>
             <Route exact path="/dashboard">
@@ -377,8 +382,8 @@ function App() {
         </main>
 
         {/* Could design a music player in the footer */}
-        <AppBar position='fixed' className={clsx(classes.footerbar, drawerOpen && classes.footerbarShift)}>
-          <MusicPlayer />
+        <AppBar position='fixed' className={clsx(classes.footerbar, drawerOpen && classes.footerbarShift)} >
+          <MusicPlayer musicList={musicList} setMusicList={setMusicList} />
         </AppBar>
       </div>
     </Router>
