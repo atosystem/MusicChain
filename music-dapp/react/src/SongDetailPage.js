@@ -93,7 +93,8 @@ const SongDetailPage = (props) => {
   const web3 = props.web3;
   const accounts = props.accounts;
   const contract = props.contract;
-  const setPlayersrc = props.setPlayersrc;
+
+  const setMusicList = props.setMusicList;
   const setPage = props.setPage;
 
   // states
@@ -278,9 +279,13 @@ const SongDetailPage = (props) => {
               <div className={classes.testingButtons}>
                 <Button
                   variant="contained"
-                  onClick={() => {
+                  onClick={async () => {
                     if (isMyMusic || isPurchased) {
                       // code to call our footer music player
+                      let music_src = await downloadAudioIPFS(songData["ipfsHash"]);
+                      console.log(music_src);
+                      // use songData["name"],songData["artist"],songData["uploader"]
+
                     } else {
                       buyMusic();
                     }

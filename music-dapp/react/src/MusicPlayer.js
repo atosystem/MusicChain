@@ -106,17 +106,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MusicPlayer() {
+export default function MusicPlayer(props) {
   const classes = useStyles();
   const [controlState, setControlState] = useState(1);
   const [onplayState, setOnplayState] = useState(false);
   const [volume, setVolume] = useState(0.4)
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [musicList, setMusicList] = useState([
-    {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
-    {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
-  ])
+
+  const musicList = props.musicList;
+  const setMusicList = props.setMusicList;
+
+  
 
   const [nowPlaying, setNowPlaying] = useState(musicList.find(m => m.onChoose === true));
   const [audio, setAudio] = useState(new Audio(nowPlaying.src));
