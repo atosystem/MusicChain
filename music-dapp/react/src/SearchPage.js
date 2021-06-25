@@ -117,6 +117,7 @@ const SearchPage = (props) => {
     return result;
   }
 
+  // Get exact music
   const getMusic = async () => {
     const result = await contract.methods
                         .getMusic(searchMusic, searchArtist)
@@ -125,14 +126,16 @@ const SearchPage = (props) => {
     return result;
   }
 
+  // Get relevant music name list given start index and depth (how many names to return)
   const getRelevantMusicNameList = async (index, depth) => {
     const result = await contract.methods
-                        .getRelevantMusicNameList(searchMusic, index)
+                        .getRelevantMusicNameList(searchMusic, index, depth)
                         .call({ from: accounts[0] });
 
     return result;
   }
 
+  // Get relevant artist name list given start index and depth (how many artists to return)
   const getRelevantArtistNameList = async (index, depth) => {
     const result = await contract.methods
                         .getRelevantArtistNameList(searchArtist, index, depth)
@@ -141,14 +144,16 @@ const SearchPage = (props) => {
     return result;
   }
 
+  // Get relevant music and artist name list given start index and depth (how many names and artist to return)
   const getRelevantMusicArtistList = async (index, depth) => {
     const result = await contract.methods
-                        .getRelevantArtistNameList(searchMusic, searchArtist, index, depth)
+                        .getRelevantMusicArtistList(searchMusic, searchArtist, index, depth)
                         .call({ from: accounts[0] });
 
     return result;
   }
 
+  // Perform search if given both music name and artist name
   const getExactSearchList = async (index) => {
     let result = await getMusic();
 
@@ -163,18 +168,23 @@ const SearchPage = (props) => {
         setExactSearchIndex(returnIndex);
       }
 
-      setExactSearchRows(moreResult);
       return moreResult;
     }
 
     result = [result];
-    setExactSearchRows(result);
-
     return result;
   }
 
-  const getArtistSearchList = async (index) => {
-    let result = await getMusicArtistList();
+  // Perform search if given only artist name
+  const getArtistSearchList = async (index, more = false) => {
+    let result;
+
+    // If we want more artists, we have to set result to 0
+    if(!more) {
+      result = await getMusicArtistList();
+    } else {
+      result = [];
+    }
 
     if (result.length < 10) {
       const diff = 10 - result.length;
@@ -190,13 +200,19 @@ const SearchPage = (props) => {
       result = result.concat(moreResult);
     }
 
-    setArtistSearchRows(result);
-
     return result;
   }
 
-  const getMusicSearchList = async (index) => {
-    let result = await getArtistMusicList();
+  // Perform search if given only music name
+  const getMusicSearchList = async (index, more = false) => {
+    let result;
+
+    // If we want more music, we have to clear the set result to 0
+    if(!more) {
+      result = await getArtistMusicList();
+    } else {
+      result = [];
+    }
 
     if (result.length < 10) {
       const diff = 10 - result.length;
@@ -211,8 +227,6 @@ const SearchPage = (props) => {
 
       result = result.concat(moreResult);
     }
-
-    setMusicSearchRows(result);
 
     return result;
   }
@@ -229,8 +243,9 @@ const SearchPage = (props) => {
     setMusicSearchRows([]);
   }
 
-
+  // The main search function
   const getSearchList = async () => {
+    // Before perform each search, we will clear the previous search result
     clearSearchIndex();
     clearSearchResult();
 
@@ -244,10 +259,13 @@ const SearchPage = (props) => {
     // For different condition, fetch different data from the blockchain
     if (exactSearch) {
       result = await getExactSearchList(0);
+      setExactSearchRows(result);
     } else if (artistSearch) {
       result = await getArtistSearchList(0);
+      setArtistSearchRows(result);
     } else if (musicSearch) {
       result = await getMusicSearchList(0);
+      setMusicSearchRows(result);
     } else {
       alert("You have to input music or artist name!");
       setSearchPending(false);
@@ -259,41 +277,42 @@ const SearchPage = (props) => {
     console.log(result);
   }
 
+  // Get more result, it should trigger to get more 10 result
   const getMoreSearchList = async () => {
     setSearchPending(true);
-    let oldResult = searchRows;
+    let oldResult;
     let result;
 
     const exactSearch = searchMusic !== "" && searchArtist !== "";
     const artistSearch = searchMusic !== "";
     const musicSearch = searchArtist !== "";
 
-    // TODO: check if reach END
     // For different condition, fetch different data from the blockchain
     if (exactSearch) {
-      if (exactSearchIndex === -1) {
-        alert("No more music!");
-        setSearchPending(false);
-        return;
-      }
-      result = await getExactSearchList(exactSearchIndex);
-      result = result.concat(oldResult);
+      // No support for exact search when requesting more result
+      alert("You have to type the right music and artist name!");
+      setSearchPending(false);
+      return;
     } else if (artistSearch) {
-      if (artistSearchIndex === -1) {
+      if (artistSearchIndex < 0) {
         alert("No more music!");
         setSearchPending(false);
         return;
       }
-      result = await getArtistSearchList(artistSearchIndex);
-      result = result.concat(oldResult);
+      oldResult = artistSearchRows;
+      result = await getArtistSearchList(artistSearchIndex, true);
+      result = oldResult.concat(result);
+      setArtistSearchRows(result);
     } else if (musicSearch) {
-      if (musicSearchIndex === -1) {
+      if (musicSearchIndex < 0) {
         alert("No more music!");
         setSearchPending(false);
         return;
       }
-      result = await getMusicSearchList(musicSearchIndex);
-      result = result.concat(oldResult);
+      oldResult = musicSearchRows;
+      result = await getMusicSearchList(musicSearchIndex, true);
+      result = oldResult.concat(result);
+      setMusicSearchRows(result);
     } else {
       alert("You have to input music or artist name!");
       setSearchPending(false);
