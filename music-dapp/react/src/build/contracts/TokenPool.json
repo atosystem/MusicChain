@@ -11470,11 +11470,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.0",
-<<<<<<< HEAD
-  "updatedAt": "2021-06-25T13:29:53.688Z",
-=======
   "updatedAt": "2021-06-25T12:34:28.473Z",
->>>>>>> 1833a990709e7aec8881cd42ff59315b573a5ca5
   "devdoc": {
     "kind": "dev",
     "methods": {},

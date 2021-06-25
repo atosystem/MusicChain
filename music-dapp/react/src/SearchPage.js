@@ -334,17 +334,27 @@ const SearchPage = (props) => {
                       .call({ from: accounts[0] });
     
     if (searchMusic !== "") {
-      tempMusics = allMusics.filter(music => music.name.includes(searchMusic));
+      tempMusics = allMusics.filter(music => {
+        let lowerCaseMusic = music.name.toLowerCase();
+        let lowerCaseSearchMusic = searchMusic.toLowerCase();
+
+        return lowerCaseMusic.includes(lowerCaseSearchMusic);
+      })
     } else {
       tempMusics = allMusics;
     }
 
     if (searchArtist !== "") {
-      result = tempMusics.filter(music => music.artist.includes(searchArtist));
+      result = tempMusics.filter(music => {
+        let lowerCaseArtist = music.artist.toLowerCase();
+        let lowerCaseSearchArtist = searchArtist.toLowerCase();
+
+        return lowerCaseArtist.includes(lowerCaseSearchArtist);
+        // music.artist.includes(searchArtist)
+      });
     } else {
       result = tempMusics;
     }
-    
     setSearchRows(result)
     setSearchPending(false)
     console.log(result);
