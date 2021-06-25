@@ -40,6 +40,7 @@ import AccountPage from "./AccountPage";
 import DashboardPage from "./DashboardPage";
 import SearchPage from "./SearchPage";
 import SongDetailPage from "./SongDetailPage";
+import MusicPlayer from "./MusicPlayer";
 
 import {
   mainListItems,
@@ -55,8 +56,6 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    // flexWrap: 'wrap',
-    height: "90%",
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -126,6 +125,31 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
     overflow: "auto",
     backgroundColor: "#202020",
+  },
+  footerbar: {
+    zIndex: theme.zIndex.drawer + 1,
+    top: 'auto',
+    bottom: 0,
+    backgroundColor: '#FDFAF6',
+    height: '11vh',
+    justifyContent: 'center',
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  footerbarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    top: 'auto',
+    bottom: 0,
+    backgroundColor: '#FDFAF6',
+    height: '11vh',
+    justifyContent: 'center',
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
 }));
 
@@ -353,9 +377,10 @@ function App() {
         </main>
 
         {/* Could design a music player in the footer */}
-        {/* <footer >asd</footer> */}
+        <AppBar position='fixed' className={clsx(classes.footerbar, drawerOpen && classes.footerbarShift)}>
+          <MusicPlayer />
+        </AppBar>
       </div>
-      <footer style={{ height: "10%" }}>Music Player</footer>
     </Router>
   );
 }
