@@ -95,7 +95,7 @@ module.exports = {
         optimizer: {
           // wihout optimizer, the contract cannot be deployed to the chain
           enabled: true,
-          runs: 100,
+          runs: 1,
         },
         evmVersion: "byzantium",
       },

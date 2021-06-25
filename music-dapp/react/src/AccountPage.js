@@ -171,7 +171,7 @@ const AccountPage = (props) => {
             >
               Uploads
             </Typography>
-            {isPendingUploadSongs || userUploadSongs ? (
+            {isPendingUploadSongs || userUploadSongs.length ? (
               <SearchResultList rows={userUploadSongs} minColumns={true} />
             ) : (
               "No Songs Yet"
@@ -189,7 +189,7 @@ const AccountPage = (props) => {
             >
               Bought
             </Typography>
-            {isPendingBoughtSongs || userBoughtSongs ? (
+            {isPendingBoughtSongs || userBoughtSongs.length ? (
               <SearchResultList rows={userBoughtSongs} minColumns={true} />
             ) : (
               "No Songs Yet"

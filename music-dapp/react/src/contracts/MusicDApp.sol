@@ -60,21 +60,21 @@ contract MusicDApp is DEX {
         return token.balanceOf(msg.sender);
     }
 
-    function registerUser() public returns (User memory) {
-        if (!userExists()) {
-            // Give 10000 token for new user
-            uint256 dexBalance = token.balanceOf(address(this));
-            require(10000 <= dexBalance, "Not enough tokens in the reserve");
-            bool success = register();
-            require(success, "Register Process failed.");
-            // token.transfer(msg.sender, 10000);
-            users[msg.sender].isValid = true;
-            User memory user = users[msg.sender];
-            return user;
-        } else {
-            return users[msg.sender];
-        }
-    }
+    // function registerUser() public returns (User memory) {
+    //     if (!userExists()) {
+    //         // Give 10000 token for new user
+    //         uint256 dexBalance = token.balanceOf(address(this));
+    //         require(10000 <= dexBalance, "Not enough tokens in the reserve");
+    //         bool success = register();
+    //         require(success, "Register Process failed.");
+    //         // token.transfer(msg.sender, 10000);
+    //         users[msg.sender].isValid = true;
+    //         User memory user = users[msg.sender];
+    //         return user;
+    //     } else {
+    //         return users[msg.sender];
+    //     }
+    // }
 
     function getUploadMusicList() public view returns (string[] memory) {
         return users[msg.sender].upload_music_list;
@@ -205,22 +205,22 @@ contract MusicDApp is DEX {
         return _music;
     }
 
-    function searchMusic(string memory _name, string memory _artist)
-        public
-        view
-        returns (Music[] memory)
-    {
-        Music[] memory returnList = new Music[](musics.length);
-        uint ind = 0;
-        for (uint i=0; i<musics.length; i++) {
-            if (str_contains(_name,musics[i].name) || str_contains(_artist,musics[i].artist))
-            {
-                returnList[ind] = musics[i];
-                i = i + 1;
-            }
-        }
-        return returnList;
-    }
+    // function searchMusic(string memory _name, string memory _artist)
+    //     public
+    //     view
+    //     returns (Music[] memory)
+    // {
+    //     Music[] memory returnList = new Music[](musics.length);
+    //     uint ind = 0;
+    //     for (uint i=0; i<musics.length; i++) {
+    //         if (str_contains(_name,musics[i].name) || str_contains(_artist,musics[i].artist))
+    //         {
+    //             returnList[ind] = musics[i];
+    //             i = i + 1;
+    //         }
+    //     }
+    //     return returnList;
+    // }
 
     function getMusicByHash(string memory _ipfsHash)
         public
@@ -298,38 +298,38 @@ contract MusicDApp is DEX {
         users[msg.sender].bought_music_list.push(songHash);
     }
 
-    function getMusicChain(
-        string memory _name,
-        string memory _artist,
-        uint8 depth
-    ) public view returns (Music[] memory) {
-        Music memory _music = music[_name][_artist];
-        uint256 count = 0;
-        Music[] memory music_chain = new Music[](depth);
+    // function getMusicChain(
+    //     string memory _name,
+    //     string memory _artist,
+    //     uint8 depth
+    // ) public view returns (Music[] memory) {
+    //     Music memory _music = music[_name][_artist];
+    //     uint256 count = 0;
+    //     Music[] memory music_chain = new Music[](depth);
 
-        // transfer token to uploader at the beginning of the chain
+    //     // transfer token to uploader at the beginning of the chain
 
-        while (true) {
-            // The depth excee the limit
-            if (count >= depth) {
-                break;
-            }
-            music_chain[count] = _music;
-            // hit the end of the chain
-            if (
-                keccak256(abi.encodePacked((_music.coverFrom))) ==
-                keccak256(abi.encodePacked(("None")))
-            ) {
-                break;
-            }
+    //     while (true) {
+    //         // The depth excee the limit
+    //         if (count >= depth) {
+    //             break;
+    //         }
+    //         music_chain[count] = _music;
+    //         // hit the end of the chain
+    //         if (
+    //             keccak256(abi.encodePacked((_music.coverFrom))) ==
+    //             keccak256(abi.encodePacked(("None")))
+    //         ) {
+    //             break;
+    //         }
 
-            _music = music_hash[_music.coverFrom];
+    //         _music = music_hash[_music.coverFrom];
 
-            count++;
-        }
+    //         count++;
+    //     }
 
-        return music_chain;
-    }
+    //     return music_chain;
+    // }
 
     function getMusicChainByHash(string memory _ipfsHash, uint8 depth)
         public
@@ -362,69 +362,69 @@ contract MusicDApp is DEX {
         return music_chain;
     }
 
-    function getRelevantMusicNameList(string memory _name, uint _index, uint depth) 
-        public 
-        view 
-        returns (Music[10] memory, uint, bool) 
-    {
-        Music[10] memory returnList;
-        uint returnIndex = 0;
-        bool reachEnd = false;
-        Music memory _music;
-        uint index = _index;
+    // function getRelevantMusicNameList(string memory _name, uint _index, uint depth) 
+    //     public 
+    //     view 
+    //     returns (Music[10] memory, uint, bool) 
+    // {
+    //     Music[10] memory returnList;
+    //     uint returnIndex = 0;
+    //     bool reachEnd = false;
+    //     Music memory _music;
+    //     uint index = _index;
         
-        for(uint i = _index; i < musics.length; i++) {
-            if(returnIndex >= depth) break;
-            _music = musics[i];
+    //     for(uint i = _index; i < musics.length; i++) {
+    //         if(returnIndex >= depth) break;
+    //         _music = musics[i];
 
-            // if a music name contains input name, put it into return list 
-            if(str_contains(_name, _music.name)) {
-                returnList[returnIndex] = _music;
-                returnIndex++;
-            }
+    //         // if a music name contains input name, put it into return list 
+    //         if(str_contains(_name, _music.name)) {
+    //             returnList[returnIndex] = _music;
+    //             returnIndex++;
+    //         }
 
-            index++;
-        }
+    //         index++;
+    //     }
 
-        // tell frontend we had reach the end of the list
-        if (index == musics.length) {
-            reachEnd = true;
-        }
+    //     // tell frontend we had reach the end of the list
+    //     if (index == musics.length) {
+    //         reachEnd = true;
+    //     }
 
-        return (returnList, returnIndex, reachEnd);
-    }
+    //     return (returnList, returnIndex, reachEnd);
+    // }
 
-    function getRelevantArtistNameList(string memory _artist, uint _index, uint depth) 
-        public 
-        view 
-        returns (Music[10] memory, uint, bool) 
-    {
-        Music[10] memory returnList;
-        uint returnIndex = 0;
-        bool reachEnd = false;
-        Music memory _music;
-        uint index = _index;
+    // function getRelevantArtistNameList(string memory _artist, uint _index, uint depth) 
+    //     public 
+    //     view 
+    //     returns (Music[10] memory, uint, bool) 
+    // {
+    //     Music[10] memory returnList;
+    //     uint returnIndex = 0;
+    //     bool reachEnd = false;
+    //     Music memory _music;
+    //     uint index = _index;
         
-        for(uint i = _index; i < musics.length; i++) {
-            if(returnIndex >= depth) break;
-            _music = musics[i];
+    //     for(uint i = _index; i < musics.length; i++) {
+    //         if(returnIndex >= depth) break;
+    //         _music = musics[i];
 
-            // if a music name contains input name, put it into return list 
-            if(str_contains(_artist, _music.artist)) {
-                returnList[returnIndex] = _music;
-                returnIndex++;
-            }
+    //         // if a music name contains input name, put it into return list 
+    //         if(str_contains(_artist, _music.artist)) {
+    //             returnList[returnIndex] = _music;
+    //             returnIndex++;
+    //         }
 
-            index++;
-        }
+    //         index++;
+    //     }
 
-        // tell frontend we had reach the end of the list
-        if (index == musics.length) {
-            reachEnd = true;
-        }
+    //     // tell frontend we had reach the end of the list
+    //     if (index == musics.length) {
+    //         reachEnd = true;
+    //     }
 
-        return (returnList, returnIndex, reachEnd);
-    }
+    //     return (returnList, returnIndex, reachEnd);
+    // }
 
     function getRelevantMusicArtistList(string memory _name, string memory _artist, uint _index, uint depth) 
         public 
