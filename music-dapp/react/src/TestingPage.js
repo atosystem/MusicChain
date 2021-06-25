@@ -101,6 +101,14 @@ const TestingPage = (props) => {
     setSongHash(result.ipfsHash);
   };
 
+  const testGetMusicList = async () => {
+    const result = await contract.methods
+      .getMusicList()
+      .call({ from: accounts[0] });
+    console.log(result);
+    console.log(result[0].artist)
+  };
+
   const testGetMusicArtistList = async () => {
     const result = await contract.methods
       .getMusicArtistList(searchMusic)
@@ -337,6 +345,14 @@ const TestingPage = (props) => {
                   }}
                 >
                   Batch Upload
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    testGetMusicList();
+                  }}
+                >
+                  Get All Musics
                 </Button>
                 <Button
                   variant="contained"

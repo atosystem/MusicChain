@@ -197,6 +197,14 @@ contract MusicDApp is DEX {
         return _music;
     }
 
+    function getMusicList()
+        public 
+        view 
+        returns (Music[] memory) 
+    {
+        return musics;
+    }
+
     function getMusicArtistList(string memory _name)
         public
         view

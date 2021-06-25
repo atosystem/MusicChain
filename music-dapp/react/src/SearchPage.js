@@ -324,6 +324,32 @@ const SearchPage = (props) => {
     console.log(result);
   }
 
+  const getSearchListJS = async () => {
+    setSearchPending(true);
+    let allMusics = [];
+    let tempMusics = [];
+    let result = [];
+    allMusics = await contract.methods
+                      .getMusicList()
+                      .call({ from: accounts[0] });
+    
+    if (searchMusic !== "") {
+      tempMusics = allMusics.filter(music => music.name.includes(searchMusic));
+    } else {
+      tempMusics = allMusics;
+    }
+
+    if (searchArtist !== "") {
+      result = tempMusics.filter(music => music.artist.includes(searchArtist));
+    } else {
+      result = tempMusics;
+    }
+    
+    setSearchRows(result)
+    setSearchPending(false)
+    console.log(result);
+  }
+
   const handle_searchMusic = async () => {
     setSearchPending(true);
     let result;
@@ -385,7 +411,8 @@ const SearchPage = (props) => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    handle_searchMusic();
+                    // handle_searchMusic();
+                    getSearchListJS();
                   }}
                 >
                   Search
