@@ -13,6 +13,7 @@ import {
   Popover,
   AppBar,
   ListItem,
+  Button,
 } from '@material-ui/core';
 
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
@@ -30,6 +31,11 @@ import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+// const test = [
+//   {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
+//   {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
+// ]
 
 const useStyles = makeStyles((theme) => ({
   iconPaper: {
@@ -125,7 +131,7 @@ export default function MusicPlayer(props) {
 
   useEffect(() => {
     let music = musicList.find(m => m.onChoose === true);
-    if(music && nowPlaying.id === 'dummy') { handleSwitchAudio(music) };
+    if(music) { handleSwitchAudio(music) };
   }, [defaultPlaying])
 
   useEffect(() => {
@@ -169,7 +175,6 @@ export default function MusicPlayer(props) {
     music.id === 'dummy' ? setOnplayState(false) : setOnplayState(true);
     audio.pause();
     audio.remove();
-    setAudio(null);
     setProgressTime(0);
     setNowPlaying(music);
     setAudio(new Audio(music.src));
@@ -275,11 +280,9 @@ export default function MusicPlayer(props) {
             setProgressTime(0);
             setDurationTime(0);
             handleSwitchAudio(
-              {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+              {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: ''}
             )
-          } else {
-            handleSwitchAudio(musicList[id+1]);
-          }
+          } 
         }
         return(
           <Tooltip title="Play in order" aria-label="play in order">
@@ -309,7 +312,11 @@ export default function MusicPlayer(props) {
           })
           setMusicList(newList)
           if (newList.length !== 0) {
-            handleSwitchAudio(musicList[id]);
+            audio.pause();
+            audio.remove();
+            if (nowPlaying.id === musicList[id].id) {
+              handleSwitchAudio(musicList[id])
+            } 
           } else {
             setProgressTime(0);
             setDurationTime(0);
@@ -357,12 +364,8 @@ export default function MusicPlayer(props) {
             handleSwitchAudio(
               {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
             )
-          } else {
-            if (id === musicList.length-1) {
-              handleSwitchAudio(musicList[0])
-            } else {
-              handleSwitchAudio(musicList[id+1]);
-            }
+          } else if (newList.length === 1) {
+            handleSwitchAudio(musicList[id])
           }
         }
         return(
@@ -379,7 +382,11 @@ export default function MusicPlayer(props) {
         );
       case 3:
         audio.onended = () => {
-          handleSwitchAudio(nowPlaying)
+          audio.pause();
+          setProgressTime(0);
+          setOnplayState(true);
+          audio.currentTime = 0;
+          audio.play();
         }
         return(
           <Tooltip title="Single loop" aria-label="single loop">
@@ -398,6 +405,46 @@ export default function MusicPlayer(props) {
 
   return (
     <Toolbar>
+      {/* <Button
+        onClick={() => {
+          let music = {
+            id: test[0].id,
+            name: test[0].name,
+            artist: test[0].artist,
+            onChoose: true, 
+            onPlay: true, 
+            src: test[0].src,
+          }
+          let newList = musicList.map(m => {
+            m.onPlay = true;
+            m.onChoose = false;
+            return m;
+          })
+          setMusicList([...newList, music]);
+        }} 
+      >
+        click 1
+      </Button>
+      <Button
+        onClick={() => {
+          let music = {
+            id: test[1].id,
+            name: test[1].name,
+            artist: test[1].artist,
+            onChoose: true, 
+            onPlay: true, 
+            src: test[1].src,
+          }
+          let newList = musicList.map(m => {
+            m.onPlay = true;
+            m.onChoose = false;
+            return m;
+          })
+          setMusicList([...newList, music]);
+        }} 
+      >
+        click 2
+      </Button> */}
       <Paper className={clsx(classes.iconPaper, onplayState && spinIconClasses.iconPaper_rotate)} 
         style={{
           transform: `rotate(-${audio.currentTime * 45 % 360}deg)`,
@@ -470,15 +517,8 @@ export default function MusicPlayer(props) {
                 return m;
               })
               setMusicList(newList)
-              handleSwitchAudio(music)
               if (nowPlaying.id === music.id) {
-                if (onplayState) {
-                  setOnplayState(false)
-                  audio.pause();
-                } else {
-                  setOnplayState(true)
-                  audio.play();
-                }
+                handleSwitchAudio(music)
               }
             }}
           >
@@ -513,15 +553,8 @@ export default function MusicPlayer(props) {
                 return m;
               })
               setMusicList(newList)
-              handleSwitchAudio(music)
               if (nowPlaying.id === music.id) {
-                if (onplayState) {
-                  setOnplayState(false)
-                  audio.pause();
-                } else {
-                  setOnplayState(true)
-                  audio.play();
-                }
+                handleSwitchAudio(music)
               }
             }}
           >
@@ -637,9 +670,7 @@ export default function MusicPlayer(props) {
                         return m;
                       })
                       setMusicList(newList)
-                      if (nowPlaying.id !== music.id) {
-                        handleSwitchAudio(music)
-                      } else {
+                      if (nowPlaying.id === music.id) {
                         if (onplayState) {
                           setOnplayState(false)
                           audio.pause();
