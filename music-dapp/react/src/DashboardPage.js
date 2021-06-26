@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 
+import musicChain_diagram from './img/MusicChainArchitecture.svg';
+
 import {
   makeStyles,
   Container,
@@ -29,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  websiteDiagram: {
+    width: "80%",
+    margin: "auto",
+  },
 }));
 
 const DashboardPage = (props) => {
@@ -56,9 +62,9 @@ const DashboardPage = (props) => {
               gutterBottom
               style={{ color: 'white', fontSize: 32 }}
             >
-              Use Guide
+              Music Chain - Use Guide
             </Typography>
-
+            <img src={musicChain_diagram} className={classes.websiteDiagram}  alt=""></img>
             <h2>Quick Start</h2>
 
             <h2>Account</h2>
