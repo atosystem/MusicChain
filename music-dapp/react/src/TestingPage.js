@@ -92,6 +92,14 @@ const TestingPage = (props) => {
   const [transToken, setTransToken] = useState("");
   const [batchUploadJsonFile, setBatchUploadJsonFile] = useState([]);
 
+  const testMusicExists = async () => {
+    const result = await contract.methods
+      .musicExists(searchMusic, searchArtist)
+      .call({ from: accounts[0] });
+    console.log(result);
+    return result;
+  };
+
   const testGetMusic = async () => {
     const result = await contract.methods
       .getMusic(searchMusic, searchArtist)
@@ -353,6 +361,14 @@ const TestingPage = (props) => {
                   }}
                 >
                   Get All Musics
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    testMusicExists();
+                  }}
+                >
+                  Test Music Exists
                 </Button>
                 <Button
                   variant="contained"

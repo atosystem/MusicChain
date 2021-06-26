@@ -350,7 +350,6 @@ const SearchPage = (props) => {
         let lowerCaseSearchArtist = searchArtist.toLowerCase();
 
         return lowerCaseArtist.includes(lowerCaseSearchArtist);
-        // music.artist.includes(searchArtist)
       });
     } else {
       result = tempMusics;

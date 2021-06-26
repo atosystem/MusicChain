@@ -365,7 +365,7 @@ export default function MusicPlayer(props) {
               {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
             )
           } else if (newList.length === 1) {
-            handleSwitchAudio(musicList[id])
+            handleSwitchAudio(musicList[0])
           }
         }
         return(
@@ -712,7 +712,8 @@ export default function MusicPlayer(props) {
                     </Typography>
                   </ListItem>
   
-                  <Tooltip title="Click to delete" aria-label="click to delete">
+                  {music.id === nowPlaying.id ? null :
+                    <Tooltip title="Click to delete" aria-label="click to delete">
                     <IconButton
                       edge="start"
                       onClick={() => {
@@ -724,6 +725,7 @@ export default function MusicPlayer(props) {
                       <CloseIcon fontSize="small" className={classes.icon}/>
                     </IconButton>
                   </Tooltip>
+                  }
                 </div>
               )})}
           </div>
