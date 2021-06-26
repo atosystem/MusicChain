@@ -734,7 +734,8 @@ export default function MusicPlayer(props) {
 
       <Paper style={{width: '7%'}}></Paper>
 
-      <Tooltip title="Close" aria-label="close">
+      {/* hide the close button */}
+      {/* <Tooltip title="Close" aria-label="close">
         <IconButton
           edge="end"
           onClick={() => {
@@ -743,7 +744,7 @@ export default function MusicPlayer(props) {
         >
           <CloseIcon className={classes.icon}/>
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
      
     </Toolbar>
   )

@@ -283,11 +283,11 @@ function App() {
               </Button>
             </div>
 
-            <IconButton color="inherit">
+            {/* <IconButton color="inherit">
               <Badge badgeContent={3} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
         </AppBar>
 
