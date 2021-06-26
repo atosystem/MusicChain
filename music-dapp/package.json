@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@material-ui/core": "^4.11.4",
-    "prettier": "^2.3.1"
+    "prettier": "^2.3.1",
+    "react-helmet": "^6.1.0"
   }
 }
