@@ -43,9 +43,9 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.0+commit.c7dfd78e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"last_completed_migration\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"completed\",\"type\":\"uint256\"}],\"name\":\"setCompleted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/systemato/dev/nmlab-final/music-dapp/react/src/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"/Users/systemato/dev/nmlab-final/music-dapp/react/src/contracts/Migrations.sol\":{\"keccak256\":\"0x7eaedbb1a3e4e0f585d9063393872f88ded247ca3c3c3c8492ea18e7629a6411\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4a3eb571cee910095df65a06a1c1d3f89187c72a3c184ef87a7538d9aa39ad07\",\"dweb:/ipfs/QmdqR3vrSSGR49qFGZr49Mb39z7dgD6tSzEDoaqtM31o61\"]}},\"version\":1}",
-  "bytecode": "0x608060405260008054600160a060020a0319163317905534801561002257600080fd5b506101a2806100326000396000f3fe608060405234801561001057600080fd5b50600436106100445760e060020a6000350463445df0ac81146100495780638da5cb5b14610067578063fdacd5761461007c575b600080fd5b610051610091565b60405161005e9190610163565b60405180910390f35b61006f610097565b60405161005e91906100f9565b61008f61008a3660046100e1565b6100a6565b005b60015481565b600054600160a060020a031681565b600054600160a060020a031633146100dc5760405160e560020a62461bcd0281526004016100d39061010d565b60405180910390fd5b600155565b6000602082840312156100f2578081fd5b5035919050565b600160a060020a0391909116815260200190565b60208082526033908201527f546869732066756e6374696f6e206973207265737472696374656420746f20746040820152606960020a7234329031b7b73a3930b1ba13b99037bbb732b902606082015260800190565b9081526020019056fea26469706673582212204755eb6e69471957b4bbdf2a10f74285962e5479e38ef6da0749fceecb37049f64736f6c63430008000033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100445760e060020a6000350463445df0ac81146100495780638da5cb5b14610067578063fdacd5761461007c575b600080fd5b610051610091565b60405161005e9190610163565b60405180910390f35b61006f610097565b60405161005e91906100f9565b61008f61008a3660046100e1565b6100a6565b005b60015481565b600054600160a060020a031681565b600054600160a060020a031633146100dc5760405160e560020a62461bcd0281526004016100d39061010d565b60405180910390fd5b600155565b6000602082840312156100f2578081fd5b5035919050565b600160a060020a0391909116815260200190565b60208082526033908201527f546869732066756e6374696f6e206973207265737472696374656420746f20746040820152606960020a7234329031b7b73a3930b1ba13b99037bbb732b902606082015260800190565b9081526020019056fea26469706673582212204755eb6e69471957b4bbdf2a10f74285962e5479e38ef6da0749fceecb37049f64736f6c63430008000033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.0+commit.c7dfd78e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"last_completed_migration\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"completed\",\"type\":\"uint256\"}],\"name\":\"setCompleted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/chiao1/Desktop/NM-Lab/project/nmlab-final/music-dapp/react/src/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"/Users/chiao1/Desktop/NM-Lab/project/nmlab-final/music-dapp/react/src/contracts/Migrations.sol\":{\"keccak256\":\"0x7eaedbb1a3e4e0f585d9063393872f88ded247ca3c3c3c8492ea18e7629a6411\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4a3eb571cee910095df65a06a1c1d3f89187c72a3c184ef87a7538d9aa39ad07\",\"dweb:/ipfs/QmdqR3vrSSGR49qFGZr49Mb39z7dgD6tSzEDoaqtM31o61\"]}},\"version\":1}",
+  "bytecode": "0x608060405260008054600160a060020a0319163317905534801561002257600080fd5b506101a2806100326000396000f3fe608060405234801561001057600080fd5b50600436106100445760e060020a6000350463445df0ac81146100495780638da5cb5b14610067578063fdacd5761461007c575b600080fd5b610051610091565b60405161005e9190610163565b60405180910390f35b61006f610097565b60405161005e91906100f9565b61008f61008a3660046100e1565b6100a6565b005b60015481565b600054600160a060020a031681565b600054600160a060020a031633146100dc5760405160e560020a62461bcd0281526004016100d39061010d565b60405180910390fd5b600155565b6000602082840312156100f2578081fd5b5035919050565b600160a060020a0391909116815260200190565b60208082526033908201527f546869732066756e6374696f6e206973207265737472696374656420746f20746040820152606960020a7234329031b7b73a3930b1ba13b99037bbb732b902606082015260800190565b9081526020019056fea264697066735822122022f5bfa8611859ca000c638d524d83179bce75fdfa97bab360fc8aca7b0baa0264736f6c63430008000033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100445760e060020a6000350463445df0ac81146100495780638da5cb5b14610067578063fdacd5761461007c575b600080fd5b610051610091565b60405161005e9190610163565b60405180910390f35b61006f610097565b60405161005e91906100f9565b61008f61008a3660046100e1565b6100a6565b005b60015481565b600054600160a060020a031681565b600054600160a060020a031633146100dc5760405160e560020a62461bcd0281526004016100d39061010d565b60405180910390fd5b600155565b6000602082840312156100f2578081fd5b5035919050565b600160a060020a0391909116815260200190565b60208082526033908201527f546869732066756e6374696f6e206973207265737472696374656420746f20746040820152606960020a7234329031b7b73a3930b1ba13b99037bbb732b902606082015260800190565b9081526020019056fea264697066735822122022f5bfa8611859ca000c638d524d83179bce75fdfa97bab360fc8aca7b0baa0264736f6c63430008000033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [
@@ -665,9 +665,9 @@
   "sourceMap": "66:352:0:-:0;;;90:33;;;-1:-1:-1;;;;;;90:33:0;113:10;90:33;;;66:352;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "66:352:0:-:0;;;;;;;;;;;;;;;;;;-1:-1:-1;;;66:352:0;;;;;;;;;;;;;;;;;;;;;;127:36;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;90:33;;;:::i;:::-;;;;;;;:::i;313:103::-;;;;;;:::i;:::-;;:::i;:::-;;127:36;;;;:::o;90:33::-;;;-1:-1:-1;;;;;90:33:0;;:::o;313:103::-;225:5;;-1:-1:-1;;;;;225:5:0;211:10;:19;196:101;;;;-1:-1:-1;;;;;196:101:0;;;;;;;:::i;:::-;;;;;;;;;375:24:::1;:36:::0;313:103::o;14:190:3:-;;126:2;114:9;105:7;101:23;97:32;94:2;;;147:6;139;132:22;94:2;-1:-1:-1;175:23:3;;84:120;-1:-1:-1;84:120:3:o;209:203::-;-1:-1:-1;;;;;373:32:3;;;;355:51;;343:2;328:18;;310:102::o;417:415::-;619:2;601:21;;;658:2;638:18;;;631:30;697:34;692:2;677:18;;670:62;-1:-1:-1;;;;;763:2:3;748:18;;741:49;822:3;807:19;;591:241::o;837:177::-;983:25;;;971:2;956:18;;938:76::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.22 <0.9.0;\n\ncontract Migrations {\n  address public owner = msg.sender;\n  uint public last_completed_migration;\n\n  modifier restricted() {\n    require(\n      msg.sender == owner,\n      \"This function is restricted to the contract's owner\"\n    );\n    _;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n}\n",
-  "sourcePath": "/Users/systemato/dev/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
+  "sourcePath": "/Users/chiao1/Desktop/NM-Lab/project/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
   "ast": {
-    "absolutePath": "/Users/systemato/dev/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
+    "absolutePath": "/Users/chiao1/Desktop/NM-Lab/project/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         32
@@ -1055,7 +1055,7 @@
     "src": "32:387:0"
   },
   "legacyAST": {
-    "absolutePath": "/Users/systemato/dev/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
+    "absolutePath": "/Users/chiao1/Desktop/NM-Lab/project/nmlab-final/music-dapp/react/src/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         32
@@ -1450,12 +1450,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xEaa0d226d4993a2564a952ebf7887d2497Acb673",
-      "transactionHash": "0x5be8d2c798dad64a3488ab1f999c51591433cd1351a48ea55deeb984b1a7b7f3"
+      "address": "0x1375833F477dC6ffd097A57f3676D23D010b4E1b",
+      "transactionHash": "0xe948e99369635baec1978b30c75e32a59bd69e72af41f3b51886e526ea791e7e"
     }
   },
   "schemaVersion": "3.4.0",
-  "updatedAt": "2021-06-26T13:09:03.024Z",
+  "updatedAt": "2021-06-26T22:41:55.920Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

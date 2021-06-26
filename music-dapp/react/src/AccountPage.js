@@ -160,7 +160,7 @@ const AccountPage = (props) => {
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4} lg={6}>
+        <Grid item xs={12} md={4} lg={4}>
           <Paper className={classes.paper}>
             <Typography
               component="h2"
@@ -178,7 +178,7 @@ const AccountPage = (props) => {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={4} lg={6}>
+        <Grid item xs={12} md={4} lg={4}>
           <Paper className={classes.paper}>
             <Typography
               component="h2"
@@ -216,7 +216,7 @@ const AccountPage = (props) => {
             </Button>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={4} lg={6}>
+        <Grid item xs={12} md={4} lg={4}>
           <Paper className={fixedHeightPaper}>
             <Typography
               component="h2"
