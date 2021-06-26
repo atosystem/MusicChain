@@ -32,10 +32,10 @@ import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-// const test = [
-//   {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
-//   {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
-// ]
+const test = [
+  {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
+  {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
+]
 
 const useStyles = makeStyles((theme) => ({
   iconPaper: {
@@ -405,7 +405,7 @@ export default function MusicPlayer(props) {
 
   return (
     <Toolbar>
-      {/* <Button
+      <Button
         onClick={() => {
           let music = {
             id: test[0].id,
@@ -444,7 +444,7 @@ export default function MusicPlayer(props) {
         }} 
       >
         click 2
-      </Button> */}
+      </Button>
       <Paper className={clsx(classes.iconPaper, onplayState && spinIconClasses.iconPaper_rotate)} 
         style={{
           transform: `rotate(-${audio.currentTime * 45 % 360}deg)`,
@@ -628,6 +628,14 @@ export default function MusicPlayer(props) {
               <IconButton
                 edge='start'
                 onClick={() => {
+                  // Fix
+                  audio.pause();
+                  audio.remove();
+                  setProgressTime(0);
+                  setDurationTime(0);
+                  handleSwitchAudio(
+                    {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+                  )
                   setMusicList([])
                 }}
               >
@@ -734,7 +742,7 @@ export default function MusicPlayer(props) {
 
       <Paper style={{width: '7%'}}></Paper>
 
-      <Tooltip title="Close" aria-label="close">
+      {/* <Tooltip title="Close" aria-label="close">
         <IconButton
           edge="end"
           onClick={() => {
@@ -743,7 +751,7 @@ export default function MusicPlayer(props) {
         >
           <CloseIcon className={classes.icon}/>
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
      
     </Toolbar>
   )
