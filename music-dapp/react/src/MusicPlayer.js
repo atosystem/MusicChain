@@ -102,7 +102,6 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem_chosen: {
     backgroundColor: '#FFEEEE',
-
   },
 }))
 
@@ -126,7 +125,7 @@ export default function MusicPlayer(props) {
 
   useEffect(() => {
     let music = musicList.find(m => m.onChoose === true);
-    if(music) { handleSwitchAudio(music) };
+    if(music && nowPlaying.id === 'dummy') { handleSwitchAudio(music) };
   }, [defaultPlaying])
 
   useEffect(() => {
@@ -170,6 +169,7 @@ export default function MusicPlayer(props) {
     music.id === 'dummy' ? setOnplayState(false) : setOnplayState(true);
     audio.pause();
     audio.remove();
+    setAudio(null);
     setProgressTime(0);
     setNowPlaying(music);
     setAudio(new Audio(music.src));
@@ -470,8 +470,7 @@ export default function MusicPlayer(props) {
                 return m;
               })
               setMusicList(newList)
-              // if (nowPlaying.id !== music.id) {
-              //   handleSwitchAudio(music)
+              handleSwitchAudio(music)
               if (nowPlaying.id === music.id) {
                 if (onplayState) {
                   setOnplayState(false)
@@ -481,7 +480,6 @@ export default function MusicPlayer(props) {
                   audio.play();
                 }
               }
-              handleSwitchAudio(music)
             }}
           >
             <SkipPrevious fontSize="large" className={classes.icon}/>
@@ -515,8 +513,7 @@ export default function MusicPlayer(props) {
                 return m;
               })
               setMusicList(newList)
-              // if (nowPlaying.id !== music.id) {
-              //   handleSwitchAudio(music);
+              handleSwitchAudio(music)
               if (nowPlaying.id === music.id) {
                 if (onplayState) {
                   setOnplayState(false)
@@ -526,7 +523,6 @@ export default function MusicPlayer(props) {
                   audio.play();
                 }
               }
-              handleSwitchAudio(music)
             }}
           >
             <SkipNextIcon fontSize="large" className={classes.icon}/>
