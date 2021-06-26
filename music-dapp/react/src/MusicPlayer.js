@@ -125,6 +125,11 @@ export default function MusicPlayer(props) {
   const [progressTime, setProgressTime] = useState(0);
 
   useEffect(() => {
+    let music = musicList.find(m => m.onChoose === true);
+    if(music) { handleSwitchAudio(music) };
+  }, [defaultPlaying])
+
+  useEffect(() => {
     audio.onloadedmetadata = () => {setDurationTime(audio.duration)};
     audio.onloadeddata = () => {audio.play()};
     audio.ontimeupdate = () => {setProgressTime(audio.currentTime)};
@@ -162,7 +167,7 @@ export default function MusicPlayer(props) {
   };
 
   const handleSwitchAudio = (music) => {
-    setOnplayState(true);
+    music.id === 'dummy' ? setOnplayState(false) : setOnplayState(true);
     audio.pause();
     audio.remove();
     setProgressTime(0);
@@ -260,13 +265,15 @@ export default function MusicPlayer(props) {
                 m.onChoose = true;
               }
             }
-            if (m.id === nowPlaying.id) {
+            if (m.id === nowPlaying.id && m.id !== musicList[id].id) {
               m.onPlay = !onplayState;
             }
             return m;
           })
           setMusicList(newList)
           if (id === musicList.length-1) {
+            setProgressTime(0);
+            setDurationTime(0);
             handleSwitchAudio(
               {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
             )
@@ -295,13 +302,21 @@ export default function MusicPlayer(props) {
             if (m.id === musicList[id].id) {
               m.onChoose = true;
             }
-            if (m.id === nowPlaying.id) {
+            if (m.id === nowPlaying.id && m.id !== musicList[id].id) {
               m.onPlay = !onplayState;
             }
             return m;
           })
           setMusicList(newList)
-          handleSwitchAudio(musicList[id]);
+          if (newList.length !== 0) {
+            handleSwitchAudio(musicList[id]);
+          } else {
+            setProgressTime(0);
+            setDurationTime(0);
+            handleSwitchAudio(
+              {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+            )
+          }
         }
         return(
           <Tooltip title="Shuffle playback" aria-label="shuffle playback">
@@ -330,16 +345,24 @@ export default function MusicPlayer(props) {
                 m.onChoose = true;
               }
             }
-            if (m.id === nowPlaying.id) {
+            if (m.id === nowPlaying.id && m.id !== musicList[id].id) {
               m.onPlay = !onplayState;
             }
             return m;
           })
           setMusicList(newList)
-          if (id === musicList.length-1) {
-            handleSwitchAudio(musicList[0])
+          if (newList.length === 0) {
+            setProgressTime(0);
+            setDurationTime(0);
+            handleSwitchAudio(
+              {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+            )
           } else {
-            handleSwitchAudio(musicList[id+1]);
+            if (id === musicList.length-1) {
+              handleSwitchAudio(musicList[0])
+            } else {
+              handleSwitchAudio(musicList[id+1]);
+            }
           }
         }
         return(
@@ -422,79 +445,93 @@ export default function MusicPlayer(props) {
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Previous track" aria-label="skip to previous">
+      {nowPlaying.id === 'dummy' || musicList.length === 0 ? 
         <IconButton
           edge="start"
           disabled={nowPlaying.id === 'dummy' || musicList.length === 0}
-          onClick={() => {
-            let id = musicList.findIndex(m => m.id === nowPlaying.id);
-            let music = (id === 0) ? musicList[musicList.length-1] : musicList[id-1];
-            let newList = musicList.map(m => {
-              m.onPlay = true;
-              m.onChoose = false;
-              if (m.id === music.id) {
-                m.onChoose = true;
-              }
-              if (m.id === nowPlaying.id) {
-                m.onPlay = !onplayState;
-              }
-              return m;
-            })
-            setMusicList(newList)
-            if (nowPlaying.id !== music.id) {
-              handleSwitchAudio(music)
-            } else {
-              if (onplayState) {
-                setOnplayState(false)
-                audio.pause();
-              } else {
-                setOnplayState(true)
-                audio.play();
-              }
-            }
-          }}
         >
           <SkipPrevious fontSize="large" className={classes.icon}/>
-        </IconButton>
-      </Tooltip>
+        </IconButton> :
+        <Tooltip title="Previous track" aria-label="skip to previous">
+          <IconButton
+            edge="start"
+            onClick={() => {
+              let id = musicList.findIndex(m => m.id === nowPlaying.id);
+              let music = (id === 0) ? musicList[musicList.length-1] : musicList[id-1];
+              let newList = musicList.map(m => {
+                m.onPlay = true;
+                m.onChoose = false;
+                if (m.id === music.id) {
+                  m.onChoose = true;
+                }
+                if (m.id === nowPlaying.id && m.id !== music.id) {
+                  m.onPlay = !onplayState;
+                }
+                return m;
+              })
+              setMusicList(newList)
+              // if (nowPlaying.id !== music.id) {
+              //   handleSwitchAudio(music)
+              if (nowPlaying.id === music.id) {
+                if (onplayState) {
+                  setOnplayState(false)
+                  audio.pause();
+                } else {
+                  setOnplayState(true)
+                  audio.play();
+                }
+              }
+              handleSwitchAudio(music)
+            }}
+          >
+            <SkipPrevious fontSize="large" className={classes.icon}/>
+          </IconButton>
+        </Tooltip>}
 
       {PlayPauseControl(onplayState)}
 
-      <Tooltip title="Next track" aria-label="skip to next">
+      {nowPlaying.id === 'dummy' || musicList.length === 0 ? 
         <IconButton
           edge="start"
           disabled={nowPlaying.id === 'dummy' || musicList.length === 0}
-          onClick={() => {
-            let id = musicList.findIndex(m => m.id === nowPlaying.id);
-            let music = (id === musicList.length-1) ? musicList[0] : musicList[id+1];
-            let newList = musicList.map(m => {
-              m.onPlay = true;
-              m.onChoose = false;
-              if (m.id === music.id) {
-                m.onChoose = true;
-              }
-              if (m.id === nowPlaying.id) {
-                m.onPlay = !onplayState;
-              }
-              return m;
-            })
-            setMusicList(newList)
-            if (nowPlaying.id !== music.id) {
-              handleSwitchAudio(music);
-            } else {
-              if (onplayState) {
-                setOnplayState(false)
-                audio.pause();
-              } else {
-                setOnplayState(true)
-                audio.play();
-              }
-            }
-          }}
         >
           <SkipNextIcon fontSize="large" className={classes.icon}/>
-        </IconButton>
-      </Tooltip>
+        </IconButton> :
+        <Tooltip title="Next track" aria-label="skip to next">
+          <IconButton
+            edge="start"
+            onClick={() => {
+              let id = musicList.findIndex(m => m.id === nowPlaying.id);
+              let music = (id === musicList.length-1) ? musicList[0] : musicList[id+1];
+              let newList = musicList.map(m => {
+                m.onPlay = true;
+                m.onChoose = false;
+                if (m.id === music.id) {
+                  m.onChoose = true;
+                }
+                if (m.id === nowPlaying.id && m.id !== music.id) {
+                  m.onPlay = !onplayState;
+                }
+                return m;
+              })
+              setMusicList(newList)
+              // if (nowPlaying.id !== music.id) {
+              //   handleSwitchAudio(music);
+              if (nowPlaying.id === music.id) {
+                if (onplayState) {
+                  setOnplayState(false)
+                  audio.pause();
+                } else {
+                  setOnplayState(true)
+                  audio.play();
+                }
+              }
+              handleSwitchAudio(music)
+            }}
+          >
+            <SkipNextIcon fontSize="large" className={classes.icon}/>
+          </IconButton>
+        </Tooltip>}
 
       {SubControls(controlState)}
 

@@ -94,6 +94,7 @@ const SongDetailPage = (props) => {
   const accounts = props.accounts;
   const contract = props.contract;
 
+  const musicList = props.musicList;
   const setMusicList = props.setMusicList;
   const setPage = props.setPage;
 
@@ -285,7 +286,20 @@ const SongDetailPage = (props) => {
                       let music_src = await downloadAudioIPFS(songData["ipfsHash"]);
                       console.log(music_src);
                       // use songData["name"],songData["artist"],songData["uploader"]
-
+                      let music = {
+                        id: songData["ipfsHash"],
+                        name: songData["name"],
+                        artist: songData["artist"],
+                        onChoose: true, 
+                        onPlay: true, 
+                        src: music_src
+                      }
+                      let newList = musicList.map(m => {
+                        m.onPlay = true;
+                        m.onChoose = false;
+                        return m;
+                      })
+                      setMusicList([...newList, music]);
                     } else {
                       buyMusic();
                     }

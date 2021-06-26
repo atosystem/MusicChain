@@ -165,8 +165,8 @@ function App() {
   // const [playersrc, setPlayersrc] = useState("");
 
   const [musicList, setMusicList] = useState([
-    {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
-    {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
+    // {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
+    // {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
   ])
 
   useEffect(async () => {
@@ -349,6 +349,7 @@ function App() {
                 contract={contract}
                 accounts={accounts}
                 setPage={setPage}
+                musicList={musicList}
                 setMusicList={setMusicList}
               />
             </Route>
