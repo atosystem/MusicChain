@@ -157,6 +157,13 @@ const UploadPage = (props) => {
     return result;
   };
 
+  const getMusicExists = async () => {
+    const result = await contract.methods
+      .musicExists(songname, songartist)
+      .call({ from: accounts[0] });
+    return result;
+  };
+
   const uploadMusicBlockchain = async (retHash, coverFromHash = "None") => {
     try {
       const music = await contract.methods
@@ -168,6 +175,7 @@ const UploadPage = (props) => {
       console.log(error);
     }
   };
+
 
   const handleUploads = async () => {
     // console.log(`web3: ${web3}`);
@@ -192,6 +200,13 @@ const UploadPage = (props) => {
       setSongData({ selectedFile: null });
       return;
     }
+
+    let musicExists = await getMusicExists();
+    if (musicExists) {
+      callAlert("The music had already existed!");
+      return;
+    }
+
     setUploadPending(true);
     uploadAudioIPFS(songdata.selectedFile, songname, (retHash) => {
       setSongHash(retHash);
