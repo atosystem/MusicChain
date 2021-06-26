@@ -203,7 +203,7 @@ const UploadPage = (props) => {
 
     let musicExists = await getMusicExists();
     if (musicExists) {
-      callAlert("The exist had already existed!");
+      callAlert("The music had already existed!");
       return;
     }
 
