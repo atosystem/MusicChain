@@ -27,4 +27,5 @@ audio
 package-lock.json
 /contracts/node_modules
 /react/build
+/react/src/build
 /react/node_modules

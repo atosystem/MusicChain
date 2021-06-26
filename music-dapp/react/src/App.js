@@ -4,6 +4,7 @@ import getWeb3 from "./utils/getWeb3";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Helmet } from 'react-helmet'
 
 import { downloadAudioIPFS } from "./ipfs/download";
 import MusicDAppContract from "./build/contracts/MusicDApp.json";
@@ -155,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState("Dashboard");
 
   const [songHash, setSongHash] = useState("");
@@ -170,6 +171,7 @@ function App() {
   ])
 
   useEffect(async () => {
+    document.title = "MusicChain"
     await connectWeb3();
   }, []);
 
@@ -266,6 +268,7 @@ function App() {
               // noWrap
               className={classes.title}
             >
+              {"MusicChain - "}
               {accounts.length ? accounts[0] : "no account selected yet"}
             </Typography>
 

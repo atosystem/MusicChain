@@ -15,6 +15,8 @@ import {
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Box from '@material-ui/core/Box';
 // import {} from '@material-ui/lab/Alert';
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -105,6 +107,7 @@ const UploadPage = (props) => {
   );
   const [fingerprstatus, setFingerprstatus] = useState("no file yet");
   const [backendInfo, setBackendInfo] = useState([]);
+  const [matchingProgress, setMatchingProgress] = useState({});
 
   // // for alert msg
   // const [alertmsg, setAlermsg] = useState('');
@@ -205,15 +208,12 @@ const UploadPage = (props) => {
         let msg_obj = JSON.parse(message.data);
         // setBackendInfo(backendInfo.concat([JSON.parse(JSON.stringify(msg_obj))]))
         // setBackendInfo(backendInfo.push(msg_obj))
-        setBackendInfo(backendInfo.concat(JSON.parse(JSON.stringify(msg_obj))));
+        // setBackendInfo(backendInfo.concat(JSON.parse(JSON.stringify(msg_obj))));
+        setBackendInfo([...backendInfo, msg_obj]);
 
         if (msg_obj.status === "saved_query_hpcp") {
           source.close();
           setUploadPending(false);
-          // if (msg_obj.payload.length > 0) {
-          //   console.log("coverfrom" + msg_obj.payload[0])
-          //   uploadMusicBlockchain(retHash, msg_obj.payload[0]);
-          // }
           if (msg_obj.payload.length > 0) {
             console.log("coverfrom" + msg_obj.payload[0]);
             uploadMusicBlockchain(retHash, msg_obj.payload[0]);
@@ -223,6 +223,8 @@ const UploadPage = (props) => {
         } else if (msg_obj.status === "matching_results") {
           // let x = { "status": "matching_results", "payload": [{ "song_hash": "QmRhPHUnNHUodTJb5QciUj6zuEHZZd5fFVTBoJnUTwKh9N", "dist": 0.22824497520923615, "exact": false }, { "song_hash": "QmY3vX8TRHvM8RsgJCjHP4FVRNq1CgC6poTPUBxEHRRhkw", "dist": 0.15082646906375885, "exact": false }] }
           showResult(msg_obj.payload);
+        } else if (msg_obj.status === "matching") {
+          setMatchingProgress(msg_obj.payload);
         } else if (msg_obj.status === "music_exist") {
           source.close();
           setUploadPending(false);
@@ -341,12 +343,23 @@ const UploadPage = (props) => {
               {/* {uploadPending && <CircularProgress />} */}
               {backendInfo.length
                 ? backendInfo.map((b, ind) => {
+                  if (b.status === "matching") {
+                    let p = (b.payload.current_idx/b.payload.total_len)*100;
+                    console.log(b.payload)
+                    return(
+                    <Alert key={ind} severity="info">
+                      matching{` ${Math.round(p)}%`}
+                    </Alert>);
+                  } else {
                     return (
-                      <Alert key={ind} severity="success">
+                      <Alert key={ind} severity={b.status === "music_exist" ? "warning" : "success"}>
                         {b.status}
+
                       </Alert>
                     );
-                  })
+                  }
+                })
+
                 : null}
             </div>
 
