@@ -98,6 +98,9 @@ const SongDetailPage = (props) => {
   const setMusicList = props.setMusicList;
   const setPage = props.setPage;
 
+  // for alert msg
+  const callAlert = props.callAlert;
+
   // states
   const [songHash, setSongHash] = useState("");
   const [songName, setSongName] = useState("");
@@ -107,17 +110,23 @@ const SongDetailPage = (props) => {
   const [isMyMusic, setIsMyMusic] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
   const [copyrightChain, setCopyrightChain] = useState([]);
+  const [userBalance, setUserBalance] = useState(0);
 
   const { queryhash } = useParams();
 
   useEffect(() => {
     setPage("Detail");
     setSearchHash(queryhash);
+
   }, []);
 
   useEffect(async () => {
     await getMusicByHash();
   }, [accounts, contract, queryhash]);
+
+  useEffect(async () => {
+    await getUserBalance();
+  }, [accounts, contract]);
 
   // const testGetMusic = async () => {
   //   const result = await contract.methods
@@ -156,7 +165,37 @@ const SongDetailPage = (props) => {
     setCopyrightChain(result_chain.filter((x) => x.ipfsHash !== ""));
   };
 
+  const getUserBalance = async () => {
+    const balance = await contract.methods
+      .getUserBalance()
+      .call({ from: accounts[0] });
+
+    setUserBalance(balance);
+
+    return balance;
+  }
+
+  const checkUserBalance = async () => {
+    const balance = await contract.methods
+      .getUserBalance()
+      .call({ from: accounts[0] });
+
+    setUserBalance(balance);
+
+    if (parseInt(balance) < 100) {
+      console.log("You have no enough balance!")
+      return false;
+    }
+
+    return true;
+  }
   const buyMusic = async () => {
+    const hasEnoughBalance = await checkUserBalance();
+
+    if (!hasEnoughBalance) {
+      return ;
+    }
+    
     const result = await contract.methods
       .buyMusicByHash(queryhash)
       .send({ from: accounts[0] });
@@ -309,6 +348,14 @@ const SongDetailPage = (props) => {
                 </Button>
               </div>
             </form>
+            <Typography
+              component="h2"
+              variant="h6"
+              gutterBottom
+              style={{ color: "orange", fontSize: 20 }}
+            >
+              { parseInt(userBalance) < 100 ? "No enough balance!" : "" }
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={12} md={4} lg={4}>
