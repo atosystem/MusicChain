@@ -149,7 +149,7 @@ const SongDetailPage = (props) => {
     setIsPurchased(result_purchased);
 
     const result_chain = await contract.methods
-      .getMusicChainByHash(queryhash, 5)
+      .getMusicChainByHash(queryhash, 10)
       .call({ from: accounts[0] });
     console.log("result_chain");
     console.log(result_chain.filter((x) => x.ipfsHash !== ""));

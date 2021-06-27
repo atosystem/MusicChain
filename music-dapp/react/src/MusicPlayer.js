@@ -628,6 +628,14 @@ export default function MusicPlayer(props) {
               <IconButton
                 edge='start'
                 onClick={() => {
+                  // Fix
+                  audio.pause();
+                  audio.remove();
+                  setProgressTime(0);
+                  setDurationTime(0);
+                  handleSwitchAudio(
+                    {id: 'dummy', name: "Song name", artist: "Song artist", onChoose: false, onPlay: false, src: null}
+                  )
                   setMusicList([])
                 }}
               >
@@ -734,7 +742,6 @@ export default function MusicPlayer(props) {
 
       <Paper style={{width: '7%'}}></Paper>
 
-      {/* hide the close button */}
       {/* <Tooltip title="Close" aria-label="close">
         <IconButton
           edge="end"
