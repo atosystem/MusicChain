@@ -166,6 +166,11 @@ const SongDetailPage = (props) => {
   };
 
   const getUserBalance = async () => {
+    if (contract.methods == undefined) {
+      return;
+    } else if (accounts.length == 0) {
+      return;
+    }
     const balance = await contract.methods
       .getUserBalance()
       .call({ from: accounts[0] });
@@ -319,6 +324,7 @@ const SongDetailPage = (props) => {
               <div className={classes.testingButtons}>
                 <Button
                   variant="contained"
+                  disabled={(!isMyMusic && !isPurchased && parseInt(userBalance) < 100) }
                   onClick={async () => {
                     if (isMyMusic || isPurchased) {
                       // code to call our footer music player
@@ -354,7 +360,7 @@ const SongDetailPage = (props) => {
               gutterBottom
               style={{ color: "orange", fontSize: 20 }}
             >
-              { parseInt(userBalance) < 100 ? "No enough balance!" : "" }
+              { parseInt(userBalance) < 100 && !isMyMusic && !isPurchased  ? "No enough balance!" : "" }
             </Typography>
           </Paper>
         </Grid>
