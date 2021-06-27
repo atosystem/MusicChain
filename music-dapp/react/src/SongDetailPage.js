@@ -354,7 +354,7 @@ const SongDetailPage = (props) => {
               gutterBottom
               style={{ color: "orange", fontSize: 20 }}
             >
-              { parseInt(userBalance) < 100 ? "No enough Balance" : "" }
+              { parseInt(userBalance) < 100 ? "No enough balance!" : "" }
             </Typography>
           </Paper>
         </Grid>

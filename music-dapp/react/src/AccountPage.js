@@ -254,7 +254,7 @@ const AccountPage = (props) => {
               gutterBottom
               style={{ color: "orange", fontSize: 20 }}
             >
-              {parseInt(userBalance) < parseInt(sellTokenNumber) ? "No enough balance" : ""}
+              {parseInt(userBalance) < parseInt(sellTokenNumber) ? "No enough balance!" : ""}
             </Typography>
           </Paper>
         </Grid>
