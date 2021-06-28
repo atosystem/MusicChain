@@ -14,7 +14,7 @@ IPFS is a peer-to-peer hypermedia protocol designed to preserve and grow humanit
     - Resilient: There is no central servers. This properties prevent some degree of censorship, allowing files to sustain a way more longer life than their centralized counterparts.
 
 ## Setup
-1. Run `./setup.sh` in the root folder.
+1. Run `./setup.sh` in the music-dapp folder.
 ```
 ./setup.sh
 ```

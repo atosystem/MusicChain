@@ -29,3 +29,6 @@ package-lock.json
 /react/build
 /react/src/build
 /react/node_modules
+.DS_Store
+song_entries.json
+contracts
