@@ -1,5 +1,8 @@
 pragma solidity >=0.4.0 <0.9.0;
 
+/*
+ * A simple token pool implement token exchange functionlity. 
+ */
 interface TokenPool {
     function totalSupply() external view returns (uint256);
 
@@ -15,25 +18,37 @@ interface TokenPool {
     
 }
 
+
 contract MusicCoin is TokenPool {
     string public constant name = "MusicCoin";
     string public constant symbol = "MUC";
     uint8 public constant decimals = 2;
 
+    // Map user address to the amount of balance
     mapping(address => uint256) balances;
 
     uint256 _totalSupply = 100 ether;
 
     using SafeMath for uint256;
 
+    // Create token when the contract is created
     constructor() {
         balances[msg.sender] = _totalSupply;
     }
 
+    /*
+     * The total amount of tokens in the pool.
+     */
     function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
 
+    /*
+     * The balance of the user.
+     * 
+     * @param[in] tokenOwner: The user address.
+     * @param[out] balance: The user balance.
+     */
     function balanceOf(address tokenOwner)
         public
         view
@@ -43,6 +58,13 @@ contract MusicCoin is TokenPool {
         return balances[tokenOwner];
     }
 
+    /*
+     * Transfer tokens from one account to another.
+     * 
+     * @param[in] owner: The sender address.
+     * @param[in] buyer: The receiver address.
+     * @param[in]: numTokens: The number of tokens to transfer.
+     */
     function transferFrom(
         address owner,
         address buyer,
@@ -69,6 +91,10 @@ library SafeMath {
     }
 }
 
+/*
+ * A simple decentralized exchange system.
+ * 
+ */
 contract DEX {
     event Bought(uint256 amount);
     event Sold(uint256 amount);
@@ -80,30 +106,38 @@ contract DEX {
         token = new MusicCoin();
     }
 
+    /*
+     * Get the total supply of the token pool.
+     */
     function getTokenSupply() public view returns (uint256) {
         return token.totalSupply();
     }
 
+    /*
+     * Get the contract address.
+     */
     function getContractAddress() public view returns (address) {
         return address(this);
     }
 
+    /*
+     * Get the token balance of the DEX.
+     */
     function getPoolTokenBalance() public view returns (uint256) {
         return token.balanceOf(address(this));
     }
 
+    /*
+     * Get the ETH balance of the DEX.
+     */
     function getPoolEtherBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function register() public returns (bool) {
-        uint amount = 10000;
-        uint256 dexBalance = token.balanceOf(address(this));
-        require(amount <= dexBalance, "Not enough tokens in the reserve");
-        token.transferFrom(address(this), msg.sender, amount);
-        return true;
-    }
-
+    /*
+     * Buy tokens from the contract using ETH. 
+     * The ratio is Ether:Token = 1:10000.
+     */
     function buy() public payable {
         uint256 amountTobuy = msg.value;
         uint256 dexBalance = token.balanceOf(address(this));
@@ -113,19 +147,30 @@ contract DEX {
         emit Bought(amountTobuy);
     }
 
+    /*
+     * Sell contract the user owns then convert to ETH.
+     * The ratio is Ether:Token = 1:10000.
+     * 
+     * @param[in] amount: The number of tokens to be sold.
+     */
     function sell(uint256 amount) public {
         require(amount > 0, "You need to sell at least some tokens");
         token.transferFrom(msg.sender, address(this), amount);
 
-        // Send seller the sell price
         uint256 weiAmount = amount * exchange_rate;
 
         (bool success, ) = msg.sender.call{value: weiAmount}("");
-        // payable(msg.sender).transfer(weiAmount);
+
         require(success, "Transfer Ether failed.");
         emit Sold(amount);
     }
 
+    /*
+     * Transfer tokens from msg.sender to receiver.
+     * 
+     * @param[in] receiver: The receiver address.
+     * @param[in] amount: The number of tokens to be transfered.
+     */
     function transferToken(
         address receiver,
         uint256 amount
@@ -134,6 +179,13 @@ contract DEX {
         token.transferFrom(msg.sender, receiver, amount);
     }
 
+    /*
+     * Transfer token from sender to receiver.
+     * 
+     * @param[in] sender: The sender address.
+     * @param[in] receiver: The receiver address.
+     * @param[in] amount: The number of tokens to be transfered.
+     */
     function transferTokenFrom(
         address sender,
         address receiver,
