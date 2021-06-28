@@ -1,5 +1,8 @@
-# music-dapp
+# MusicChain
 
+> *A platform for original and cover music to be seen and valuable.*
+
+![](https://raw.githubusercontent.com/woodcutter-eric/nmlab-final/main/music-dapp/react/src/img/MusicChainArchitecture.svg)
 ## Setup
 1. Run `./setup.sh` in the music-dapp folder.
 ```
