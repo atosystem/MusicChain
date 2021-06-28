@@ -60,10 +60,6 @@ async function run() {
     process_child_rec.stdout.on('data', (data) => {
       console.log(`[From python engine] ${String(data).trim()}`);
       res.write(`data: ${String(data).trim()}\n\n`);
-      // String(data).split("\n").map((x)=>{
-      //     console.log(`From dejavu ${x}`)
-      //     res.write(`data: ${x}\n\n`);
-      // })
     });
 
     process_child_rec.stderr.on('data', (data) => {
@@ -76,30 +72,20 @@ async function run() {
     });
   });
 
-  // const index = fs.readFileSync('./index.html', 'utf8');
-  // app.get('/', (req, res) => res.send(index));
-
   await app.listen(3001);
   console.log('Listening on port 3001');
 }
 
-const { create, CID } = require('ipfs-http-client');
+const { create } = require('ipfs-http-client');
 const all = require('it-all');
 const uint8Array = require('uint8arrays');
 
 const downloadAudioIPFS = async (cid, out_fn) => {
-  // connect to the default API address http://localhost:5001
-  // const node = create('http://127.0.0.1:5001');
   const node = create('http://host.docker.internal:5001');
   
-
-  // const cid = 'QmTs711cqrjHLfRifJ3sVq9uCfYcmBTXQYgQtQGETLqbFy';
-  cid = cid || 'QmTs711cqrjHLfRifJ3sVq9uCfYcmBTXQYgQtQGETLqbFy';
-
-  //   console.log(cid);
-
   const dataArr = uint8Array.concat(await all(node.cat(cid)));
-  //   save to disk
+
+  // Save to disk
   console.log(`Saving file ${out_fn}`);
 
   fs.appendFileSync(out_fn, Buffer.from(dataArr));
