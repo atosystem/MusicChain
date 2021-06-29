@@ -2,6 +2,9 @@
 
 > *A platform to make Original and Cover Visible and Valuable*
 
+
+Demo Link : [Youtube](https://www.youtube.com/watch?v=rmtS9UxWCMc)
+
 ![](musicChain_arch_not_transparent.svg?raw=true&sanitize=true)
 
 ## Setup
@@ -124,8 +127,6 @@ This page is only for developers. Developers can test functions on the smart con
 ![](https://i.imgur.com/QT7s6aB.png)
 
 
-## Demo Link
-[Youtube](https://www.youtube.com/watch?v=rmtS9UxWCMc)
 
 ## Future Works
 
