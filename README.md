@@ -2,7 +2,7 @@
 
 > *A platform for original and cover music to be seen and valuable.*
 
-![](https://raw.githubusercontent.com/woodcutter-eric/nmlab-final/main/react/src/img/MusicChainArchitecture.svg)
+![](react/src/img/MusicChainArchitecture.svg?raw=true&sanitize=true)
 ## Setup
 1. Run `./setup.sh` in the music-dapp folder.
 ```
@@ -18,7 +18,12 @@ docker exec ipfs_host ipfs config --json API.HTTPHeaders.Access-Control-Allow-Me
 ```
 docker-compose restart ipfs
 ```
-
+## Start MusicChain website
+With Ganache and docker container running (backend & ipfs), go to `./react` and execute
+```
+$ npm start
+```
+MusicChain is then running at [http://localhost:3000/](http://localhost:3000/)
 ## Clean backend database data
 **Notice that you should also restart your blockchain**
 ```
