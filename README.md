@@ -2,7 +2,7 @@
 
 > *A platform for original and cover music to be seen and valuable.*
 
-![](react/src/img/MusicChainArchitecture.svg?raw=true&sanitize=true)
+![](musicChain_arch_not_transparent.svg?raw=true&sanitize=true)
 ## Setup
 1. Run `./setup.sh` in the music-dapp folder.
 ```
