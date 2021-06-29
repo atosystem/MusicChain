@@ -15,8 +15,8 @@ import {
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Box from '@material-ui/core/Box';
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Box from "@material-ui/core/Box";
 // import {} from '@material-ui/lab/Alert';
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -178,7 +178,6 @@ const UploadPage = (props) => {
       console.log(error);
     }
   };
-
 
   const handleUploads = async () => {
     // console.log(`web3: ${web3}`);
@@ -358,23 +357,28 @@ const UploadPage = (props) => {
               {/* {uploadPending && <CircularProgress />} */}
               {backendInfo.length
                 ? backendInfo.map((b, ind) => {
-                  if (b.status === "matching") {
-                    let p = (b.payload.current_idx/b.payload.total_len)*100;
-                    console.log(b.payload)
-                    return(
-                    <Alert key={ind} severity="info">
-                      matching{` ${Math.round(p)}%`}
-                    </Alert>);
-                  } else {
-                    return (
-                      <Alert key={ind} severity={b.status === "music_exist" ? "warning" : "success"}>
-                        {b.status}
-
-                      </Alert>
-                    );
-                  }
-                })
-
+                    if (b.status === "matching") {
+                      let p =
+                        (b.payload.current_idx / b.payload.total_len) * 100;
+                      console.log(b.payload);
+                      return (
+                        <Alert key={ind} severity="info">
+                          matching{` ${Math.round(p)}%`}
+                        </Alert>
+                      );
+                    } else {
+                      return (
+                        <Alert
+                          key={ind}
+                          severity={
+                            b.status === "music_exist" ? "warning" : "success"
+                          }
+                        >
+                          {b.status}
+                        </Alert>
+                      );
+                    }
+                  })
                 : null}
             </div>
 

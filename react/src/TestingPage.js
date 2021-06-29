@@ -114,7 +114,7 @@ const TestingPage = (props) => {
       .getMusicList()
       .call({ from: accounts[0] });
     console.log(result);
-    console.log(result[0].artist)
+    console.log(result[0].artist);
   };
 
   const testGetMusicArtistList = async () => {
@@ -324,8 +324,8 @@ const TestingPage = (props) => {
                   }}
                 />
                 <TextField
-                  id='music-hash-textfield'
-                  label='Token'
+                  id="music-hash-textfield"
+                  label="Token"
                   placeholder="Type token value..."
                   multiline
                   variant="outlined"
@@ -530,7 +530,6 @@ const TestingPage = (props) => {
                 >
                   Test Instance
                 </Button>
-
               </div>
             </form>
 

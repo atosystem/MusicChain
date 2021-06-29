@@ -4,7 +4,6 @@ import getWeb3 from "./utils/getWeb3";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Helmet } from 'react-helmet'
 
 import { downloadAudioIPFS } from "./ipfs/download";
 import MusicDAppContract from "./build/contracts/MusicDApp.json";
@@ -41,7 +40,7 @@ import AccountPage from "./AccountPage";
 import DashboardPage from "./DashboardPage";
 import SearchPage from "./SearchPage";
 import SongDetailPage from "./SongDetailPage";
-import MusicPlayer from "./MusicPlayer";
+import MusicPlayer from "./components/MusicPlayer";
 
 import {
   mainListItems,
@@ -129,12 +128,12 @@ const useStyles = makeStyles((theme) => ({
   },
   footerbar: {
     zIndex: theme.zIndex.drawer + 1,
-    top: 'auto',
+    top: "auto",
     bottom: 0,
-    backgroundColor: '#FDFAF6',
-    height: '11vh',
-    justifyContent: 'center',
-    transition: theme.transitions.create(['width', 'margin'], {
+    backgroundColor: "#FDFAF6",
+    height: "11vh",
+    justifyContent: "center",
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -142,12 +141,12 @@ const useStyles = makeStyles((theme) => ({
   footerbarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    top: 'auto',
+    top: "auto",
     bottom: 0,
-    backgroundColor: '#FDFAF6',
-    height: '11vh',
-    justifyContent: 'center',
-    transition: theme.transitions.create(['width', 'margin'], {
+    backgroundColor: "#FDFAF6",
+    height: "11vh",
+    justifyContent: "center",
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -168,10 +167,10 @@ function App() {
   const [musicList, setMusicList] = useState([
     // {id: 0, name: "Silence", artist: "Khalid", onChoose: true, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/Marshmello%20-%20Silence%20ft.%20Khalid.mp3'},
     // {id: 1, name: "Fireproof", artist: "VAX, Teddy Sky", onChoose: false, onPlay: false, src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/308622/VAX%20-%20Fireproof%20Feat%20Teddy%20Sky.mp3'},
-  ])
+  ]);
 
   useEffect(async () => {
-    document.title = "MusicChain"
+    document.title = "MusicChain";
     await connectWeb3();
   }, []);
 
@@ -386,7 +385,13 @@ function App() {
         </main>
 
         {/* Could design a music player in the footer */}
-        <AppBar position='fixed' className={clsx(classes.footerbar, drawerOpen && classes.footerbarShift)} >
+        <AppBar
+          position="fixed"
+          className={clsx(
+            classes.footerbar,
+            drawerOpen && classes.footerbarShift
+          )}
+        >
           <MusicPlayer musicList={musicList} setMusicList={setMusicList} />
         </AppBar>
       </div>

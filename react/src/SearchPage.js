@@ -86,10 +86,10 @@ const SearchPage = (props) => {
   }, []);
 
   // States
-  const [searchMusic, setSearchMusic] = useState('');
-  const [searchArtist, setSearchArtist] = useState('');
-  const [searchRows, setSearchRows] = useState([])
-  const [isSearchPending, setSearchPending] = useState(false)
+  const [searchMusic, setSearchMusic] = useState("");
+  const [searchArtist, setSearchArtist] = useState("");
+  const [searchRows, setSearchRows] = useState([]);
+  const [isSearchPending, setSearchPending] = useState(false);
 
   const getSearchListJS = async () => {
     setSearchPending(true);
@@ -99,24 +99,24 @@ const SearchPage = (props) => {
 
     // Get all musics from the blockchain
     allMusics = await contract.methods
-                      .getMusicList()
-                      .call({ from: accounts[0] });
-    
+      .getMusicList()
+      .call({ from: accounts[0] });
+
     // Filter result based on music name
     if (searchMusic !== "") {
-      tempMusics = allMusics.filter(music => {
+      tempMusics = allMusics.filter((music) => {
         let lowerCaseMusic = music.name.toLowerCase();
         let lowerCaseSearchMusic = searchMusic.toLowerCase();
 
         return lowerCaseMusic.includes(lowerCaseSearchMusic);
-      })
+      });
     } else {
       tempMusics = allMusics;
     }
 
     // Filter result based on artist name
     if (searchArtist !== "") {
-      result = tempMusics.filter(music => {
+      result = tempMusics.filter((music) => {
         let lowerCaseArtist = music.artist.toLowerCase();
         let lowerCaseSearchArtist = searchArtist.toLowerCase();
 
@@ -125,12 +125,12 @@ const SearchPage = (props) => {
     } else {
       result = tempMusics;
     }
-    
+
     // Set result to be rendered
-    setSearchRows(result)
-    setSearchPending(false)
+    setSearchRows(result);
+    setSearchPending(false);
     console.log(result);
-  }
+  };
 
   return (
     <Container maxWidth="lg" className={classes.container}>

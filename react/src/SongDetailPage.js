@@ -117,7 +117,6 @@ const SongDetailPage = (props) => {
   useEffect(() => {
     setPage("Detail");
     setSearchHash(queryhash);
-
   }, []);
 
   useEffect(async () => {
@@ -178,7 +177,7 @@ const SongDetailPage = (props) => {
     setUserBalance(balance);
 
     return balance;
-  }
+  };
 
   const checkUserBalance = async () => {
     const balance = await contract.methods
@@ -188,19 +187,19 @@ const SongDetailPage = (props) => {
     setUserBalance(balance);
 
     if (parseInt(balance) < 100) {
-      console.log("You have no enough balance!")
+      console.log("You have no enough balance!");
       return false;
     }
 
     return true;
-  }
+  };
   const buyMusic = async () => {
     const hasEnoughBalance = await checkUserBalance();
 
     if (!hasEnoughBalance) {
-      return ;
+      return;
     }
-    
+
     const result = await contract.methods
       .buyMusicByHash(queryhash)
       .send({ from: accounts[0] });
@@ -324,26 +323,30 @@ const SongDetailPage = (props) => {
               <div className={classes.testingButtons}>
                 <Button
                   variant="contained"
-                  disabled={(!isMyMusic && !isPurchased && parseInt(userBalance) < 100) }
+                  disabled={
+                    !isMyMusic && !isPurchased && parseInt(userBalance) < 100
+                  }
                   onClick={async () => {
                     if (isMyMusic || isPurchased) {
                       // code to call our footer music player
-                      let music_src = await downloadAudioIPFS(songData["ipfsHash"]);
+                      let music_src = await downloadAudioIPFS(
+                        songData["ipfsHash"]
+                      );
                       console.log(music_src);
                       // use songData["name"],songData["artist"],songData["uploader"]
                       let music = {
                         id: songData["ipfsHash"],
                         name: songData["name"],
                         artist: songData["artist"],
-                        onChoose: true, 
-                        onPlay: true, 
-                        src: music_src
-                      }
-                      let newList = musicList.map(m => {
+                        onChoose: true,
+                        onPlay: true,
+                        src: music_src,
+                      };
+                      let newList = musicList.map((m) => {
                         m.onPlay = true;
                         m.onChoose = false;
                         return m;
-                      })
+                      });
                       setMusicList([...newList, music]);
                     } else {
                       buyMusic();
@@ -360,7 +363,9 @@ const SongDetailPage = (props) => {
               gutterBottom
               style={{ color: "orange", fontSize: 20 }}
             >
-              { parseInt(userBalance) < 100 && !isMyMusic && !isPurchased  ? "No enough balance!" : "" }
+              {parseInt(userBalance) < 100 && !isMyMusic && !isPurchased
+                ? "No enough balance!"
+                : ""}
             </Typography>
           </Paper>
         </Grid>

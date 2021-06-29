@@ -14,7 +14,6 @@ import {
   Button,
 } from "@material-ui/core";
 
-
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(5),
@@ -148,10 +147,12 @@ const AccountPage = (props) => {
     const balance = parseInt(userBalance);
     const sellNumber = parseInt(sellTokenNumber);
     if (balance < sellNumber) {
-      console.log("not enough!")
-      return ;
+      console.log("not enough!");
+      return;
     }
-    const result = await contract.methods.sell(sellNumber).send({ from: accounts[0] });
+    const result = await contract.methods
+      .sell(sellNumber)
+      .send({ from: accounts[0] });
     console.log(result);
     getUserBalance();
     setSellTokenNumber(0);
@@ -224,19 +225,19 @@ const AccountPage = (props) => {
               gutterBottom
               style={{ color: "white", fontSize: 20 }}
             >
-              Sell 
+              Sell
             </Typography>
             <TextField
-                  id="name-textfield"
-                  label="Token"
-                  placeholder="Type token to sell..."
-                  multiline
-                  variant="outlined"
-                  size="small"
-                  value={sellTokenNumber}
-                  onChange={(event) => {
-                    setSellTokenNumber(event.target.value);
-                  }}
+              id="name-textfield"
+              label="Token"
+              placeholder="Type token to sell..."
+              multiline
+              variant="outlined"
+              size="small"
+              value={sellTokenNumber}
+              onChange={(event) => {
+                setSellTokenNumber(event.target.value);
+              }}
             />
             <p></p>
             <Button
@@ -254,7 +255,9 @@ const AccountPage = (props) => {
               gutterBottom
               style={{ color: "orange", fontSize: 20 }}
             >
-              {parseInt(userBalance) < parseInt(sellTokenNumber) ? "No enough balance!" : ""}
+              {parseInt(userBalance) < parseInt(sellTokenNumber)
+                ? "No enough balance!"
+                : ""}
             </Typography>
           </Paper>
         </Grid>

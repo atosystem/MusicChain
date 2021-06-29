@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 
-import musicChain_diagram from './img/MusicChainArchitecture.svg';
+import musicChain_diagram from "./img/MusicChainArchitecture.svg";
 
 import {
   makeStyles,
@@ -57,15 +57,18 @@ const DashboardPage = (props) => {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography
-              component='h2'
-              variant='h6'
+              component="h2"
+              variant="h6"
               gutterBottom
-              style={{ color: 'white', fontSize: 32 }}
+              style={{ color: "white", fontSize: 32 }}
             >
               Music Chain - Use Guide
             </Typography>
-            <img src={musicChain_diagram} className={classes.websiteDiagram}  alt=""></img>
-
+            <img
+              src={musicChain_diagram}
+              className={classes.websiteDiagram}
+              alt=""
+            ></img>
           </Paper>
         </Grid>
       </Grid>
