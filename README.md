@@ -1,10 +1,11 @@
 # MusicChain
 
-> *A platform for original and cover music to be seen and valuable.*
+> *A platform to make Original and Cover Visible and Valuable*
 
 ![](musicChain_arch_not_transparent.svg?raw=true&sanitize=true)
+
 ## Setup
-1. Run `./setup.sh` in the music-dapp folder.
+1. First make sure you start your docker and Ganache. Then execute `./setup.sh`folder.
 ```
 ./setup.sh
 ```
