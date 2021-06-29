@@ -34,4 +34,4 @@ package-lock.json
 /react/node_modules
 .DS_Store
 song_entries.json
-contracts
+# contracts

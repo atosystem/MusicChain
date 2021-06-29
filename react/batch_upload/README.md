@@ -1,5 +1,8 @@
 ## Batch Upload Music
 1. Download all the music file folder to `react/batch_upload/music`
+
+    (same song stay in one folder and naming convention for each song file : `{song_title}_{artist}_original.mp3` or  `{song_title}_{artist}_cover.mp3`. Depeneds on which song is original. There should only be one original music and unlimitied cover music. The cover relation is randomly designated in `parse.py`)
+
 2. Right Click on anywhere in ganache
 
     ![](https://i.imgur.com/r23JSb4.png)
