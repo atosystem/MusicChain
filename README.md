@@ -1,9 +1,13 @@
 # MusicChain
 
-> *A platform to make Original and Cover Visible and Valuable*
+> *A platform to make Original and Cover Music Visible and Valuable*
 
+## TL;DR
+There are lots of talented artists on the Internet. They often upload their cover songs to media platforms such as Youtube, Soundcloud, StreetVoice, and so on. Nonetheless, there is no such a system that utilizes the relation between original and covers, rendering either a well-known song with many cover versions without people knowing who the original composer is, or a popular original song with people having a hard time finding other cover versions.
 
-Demo Link : [Youtube](https://www.youtube.com/watch?v=rmtS9UxWCMc)
+To this end, we create *MusicChain*, which employs blockchain to record the relations of original and cover songs in a graph. Furthermore, we develop a profit-sharing mechanism based on this cover song relation graph, which is quite a novel idea to our best knowledge. Specifically, both the original artists and the cover artists benefit from this system, which we believe can stir the motivation for music creation. As a result, we make *original and cover music more visible and valuable.*
+
+Demo Link : [Youtube](https://www.youtube.com/watch?v=rmtS9UxWCMc) (In Mandarin)
 
 ![](musicChain_arch_not_transparent.svg?raw=true&sanitize=true)
 
