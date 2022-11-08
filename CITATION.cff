@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this repo, please cite it as below."
+authors:
+- family-names: "Shih"
+  given-names: "Yi Jen"
+  orcid: "https://orcid.org/0000-0000-0000-0000"
+- family-names: "Chen"
+  given-names: "Ying Chiao"
+  orcid: ""
+- family-names: "Ye"
+  given-names: "Yao De"
+  orcid: ""
+title: "MusicChain"
+version: 1.0.0
+doi: 
+date-released: 2021-06-28
+url: "https://github.com/atosystem/MusicChain"
